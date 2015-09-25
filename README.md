@@ -7,6 +7,10 @@
 [![Dependency Status](https://img.shields.io/david/nayutaya/lamjet.svg?style=flat-square)](https://david-dm.org/nayutaya/lamjet)
 [![devDependency Status](https://img.shields.io/david/dev/nayutaya/lamjet.svg?style=flat-square)](https://david-dm.org/nayutaya/lamjet#info=devDependencies)
 
+## Overview
+
+[AWS Lambda](https://aws.amazon.com/lambda/) + [Jasmine](http://jasmine.github.io/) + [CoffeeScript](http://coffeescript.org/) = Lamjet!
+
 ## Installation
 
 ```
@@ -15,7 +19,7 @@ $ npm install -g lamjet
 
 ## Usage
 
-### Create new Lambda function
+### 1. Create new Lambda function
 
 ```
 $ cd /your/project/path
@@ -26,13 +30,13 @@ $ npm install
 $ npm test  # or: gulp
 ```
 
-### Make .zip file
+### 2. Edit configuration
 
 ```
-$ npm run-script zip
+$ vim lambda-config.js
 ```
 
-### Deploy function to AWS Lambda
+### 3. Deploy function to AWS Lambda
 
 ```
 # Setup AWS credentials
@@ -40,12 +44,6 @@ $ export AWS_ACCESS_KEY_ID=...
 $ export AWS_SECRET_ACCESS_KEY=...
 
 $ npm run-script deploy
-```
-
-## Running tests
-
-```
-$ npm test
 ```
 
 ## License
