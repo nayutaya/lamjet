@@ -49,34 +49,28 @@ if process.argv[2] == "init"
     return readTemplate("gitignore")
       .then (result)-> writeArtifact(".gitignore", result.body)
 
-  Promise.resolve()
-    .then (result)-> makePackageJson(functionName: defaultFunctionName)
-    .then (result)-> makeLambdaConfigJs()
-    .then (result)-> makeGitIgnore()
-    .then (result)->
-      console.log(JSON.stringify({then: result}, null, 2))
+  makeGulpfileCoffee = ->
+    return readTemplate("gulpfile.coffee")
+      .then (result)-> writeArtifact("gulpfile.coffee", result.body)
 
-  gulpfileCoffee     = fs.readFileSync(path.join(templatePath, "gulpfile.coffee"), encoding: "utf8")
-  gulpfileCoffeePath = path.join(path.resolve(), "gulpfile.coffee")
-  console.log gulpfileCoffee
-  console.log gulpfileCoffeePath
-  fs.writeFileSync(gulpfileCoffeePath, gulpfileCoffee, encoding: "utf8", flag: "w")
+  copyTemplate = (source, destination)->
+    return readTemplate(source)
+      .then (result)-> writeArtifact((destination ? source), result.body)
 
   srcPath = path.join(path.resolve(), "src")
   console.log srcPath
   if !fs.existsSync(srcPath)
     fs.mkdirSync(srcPath)
 
-  indexCoffee     = fs.readFileSync(path.join(templatePath, "index.coffee"), encoding: "utf8")
-  indexCoffeePath = path.join(srcPath, "index.coffee")
-  console.log indexCoffee
-  console.log indexCoffeePath
-  fs.writeFileSync(indexCoffeePath, indexCoffee, encoding: "utf8", flag: "w")
+  Promise.resolve()
+    .then (result)-> makePackageJson(functionName: defaultFunctionName)
+    .then (result)-> makeLambdaConfigJs()
+    .then (result)-> makeGitIgnore()
+    .then (result)-> makeGulpfileCoffee()
+    .then (result)-> copyTemplate("index.coffee", path.join("src", "index.coffee"))
+    .then (result)-> copyTemplate("index_spec.coffee", path.join("src", "index_spec.coffee"))
+    .then (result)->
+      console.log(JSON.stringify({then: result}, null, 2))
 
-  indexSpecCoffee     = fs.readFileSync(path.join(templatePath, "index_spec.coffee"), encoding: "utf8")
-  indexSpecCoffeePath = path.join(srcPath, "index_spec.coffee")
-  console.log indexSpecCoffee
-  console.log indexSpecCoffeePath
-  fs.writeFileSync(indexSpecCoffeePath, indexSpecCoffee, encoding: "utf8", flag: "w")
 else
   console.log "Usage: lamjet init"
