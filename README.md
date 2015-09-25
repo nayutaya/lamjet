@@ -15,6 +15,8 @@ $ npm install -g lamjet
 
 ## Usage
 
+### Create new Lambda function
+
 ```
 $ cd /your/project/path
 $ mkdir your-function-name
@@ -22,6 +24,22 @@ $ cd your-function-name
 $ lamjet init
 $ npm install
 $ npm test  # or: gulp
+```
+
+### Make .zip file
+
+```
+$ npm run-script zip
+```
+
+### Deploy function to AWS Lambda
+
+```
+# Setup AWS credentials
+$ export AWS_ACCESS_KEY_ID=...
+$ export AWS_SECRET_ACCESS_KEY=...
+
+$ npm run-script deploy
 ```
 
 ## Running tests
