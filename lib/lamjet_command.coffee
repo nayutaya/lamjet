@@ -11,14 +11,16 @@ module.exports = class LamjetCommand
     @currentPath  = path.resolve()
     @artifactPath = @currentPath
 
-  readTemplate: (fileName)->
-    filePath = path.join(@templatePath, fileName)
+  readFile: (filePath)->
     return new Promise (resolve, reject)->
       fs.readFile filePath, {encoding: "utf8"}, (error, body)->
         if error?
           reject(filePath: filePath, error: error)
         else
           resolve(filePath: filePath, body: body)
+
+  readTemplate: (fileName)->
+    return @readFile(path.join(@templatePath, fileName))
 
   writeArtifact: (fileName, body)->
     self = this
