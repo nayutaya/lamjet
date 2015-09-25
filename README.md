@@ -16,9 +16,12 @@ $ npm install -g lamjet
 ## Usage
 
 ```
+$ cd /your/project/path
+$ mkdir your-function-name
+$ cd your-function-name
 $ lamjet init
 $ npm install
-$ gulp
+$ npm test  # or: gulp
 ```
 
 ## Running tests
