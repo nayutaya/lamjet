@@ -10,7 +10,18 @@
 ## Installation
 
 ```
-$ npm install lamjet
+$ npm install -g lamjet
+```
+
+## Usage
+
+```
+$ cd /your/project/path
+$ mkdir your-function-name
+$ cd your-function-name
+$ lamjet init
+$ npm install
+$ npm test  # or: gulp
 ```
 
 ## Running tests
