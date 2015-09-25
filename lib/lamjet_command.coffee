@@ -19,6 +19,14 @@ module.exports = class LamjetCommand
         else
           resolve(filePath: filePath, body: body)
 
+  makeDirectory: (dirPath)->
+    return new Promise (resolve, reject)->
+      mkdirp dirPath, (error)->
+        if error?
+          reject(error: error)
+        else
+          resolve()
+
   readTemplate: (fileName)->
     return @readFile(path.join(@templatePath, fileName))
 
@@ -26,13 +34,7 @@ module.exports = class LamjetCommand
     self = this
     filePath = path.join(@artifactPath, fileName)
     return Promise.resolve()
-      .then (result)->
-        return new Promise (resolve, reject)->
-          mkdirp path.dirname(filePath), (error)->
-            if error?
-              reject(error: error)
-            else
-              resolve()
+      .then (result)-> self.makeDirectory(path.dirname(filePath))
       .then (result)->
         return new Promise (resolve, reject)->
           # TODO: ファイルが存在する場合、上書きの有無を確認する。
