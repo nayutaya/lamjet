@@ -6,13 +6,12 @@ Promise = require("promise")
 
 module.exports = class LamjetCommand
   constructor: (@argv, @print)->
-    @toolPath     = path.join(path.dirname(@argv[1]), "..")
+    @toolPath     = path.join(__dirname, "..")
     @templatePath = path.join(@toolPath, "template")
     @currentPath  = path.resolve()
     @artifactPath = @currentPath
 
-  readTemplate: (fileName)->
-    filePath = path.join(@templatePath, fileName)
+  readFile: (filePath)->
     return new Promise (resolve, reject)->
       fs.readFile filePath, {encoding: "utf8"}, (error, body)->
         if error?
@@ -20,26 +19,34 @@ module.exports = class LamjetCommand
         else
           resolve(filePath: filePath, body: body)
 
+  writeFile: (filePath, body)->
+    return new Promise (resolve, reject)->
+      fs.writeFile filePath, body, {encoding: "utf8", flag: "w"}, (error)->
+        if error?
+          reject(filePath: filePath, error: error)
+        else
+          resolve(filePath: filePath, body: body)
+
+  makeDirectory: (dirPath)->
+    return new Promise (resolve, reject)->
+      mkdirp dirPath, (error)->
+        if error?
+          reject(error: error)
+        else
+          resolve()
+
+  readTemplate: (fileName)->
+    return @readFile(path.join(@templatePath, fileName))
+
   writeArtifact: (fileName, body)->
     self = this
     filePath = path.join(@artifactPath, fileName)
     return Promise.resolve()
+      .then (result)-> self.makeDirectory(path.dirname(filePath))
       .then (result)->
-        return new Promise (resolve, reject)->
-          mkdirp path.dirname(filePath), (error)->
-            if error?
-              reject(error: error)
-            else
-              resolve()
-      .then (result)->
-        return new Promise (resolve, reject)->
-          # TODO: ファイルが存在する場合、上書きの有無を確認する。
-          self.print("write #{filePath}")
-          fs.writeFile filePath, body, {encoding: "utf8", flag: "w"}, (error)->
-            if error?
-              reject(filePath: filePath, error: error)
-            else
-              resolve(filePath: filePath, body: body)
+        # TODO: ファイルが存在する場合、上書きの有無を確認する。
+        self.print("write #{filePath}")
+        return self.writeFile(filePath, body)
 
   makePackageJson: (options)->
     self = this

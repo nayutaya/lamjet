@@ -16,6 +16,7 @@
     "gulp-jasmine": "^2.1.0",
     "gulp-util": "^3.0.6",
     "jasmine": "^2.3.2",
-    "lambduh-gulp": "^0.1.6"
+    "lambduh-gulp": "^0.1.6",
+    "lamjet": "^0.1.0"
   }
 }
