@@ -57,6 +57,15 @@ module.exports = class LamjetCommand
         return Promise.resolve(result)
       .then (result)-> self.writeArtifact("package.json", result.body)
 
+  makeLambdaConfigJs: (options)->
+    self = this
+    functionName = options?.functionName ? throw new Error("functionName")
+    return self.readTemplate("lambda-config.js")
+      .then (result)->
+        result.body = result.body.replace(/FUNCTION-NAME/, functionName)
+        return Promise.resolve(result)
+      .then (result)-> self.writeArtifact("lambda-config.js", result.body)
+
   copyTemplate: (source, destination)->
     self = this
     return self.readTemplate(source)
@@ -67,7 +76,7 @@ module.exports = class LamjetCommand
     defaultFunctionName = path.basename(path.resolve())
     return Promise.resolve()
       .then (result)-> self.makePackageJson(functionName: defaultFunctionName)
-      .then (result)-> self.copyTemplate("lambda-config.js")
+      .then (result)-> self.makeLambdaConfigJs(functionName: defaultFunctionName)
       .then (result)-> self.copyTemplate("gitignore", ".gitignore")
       .then (result)-> self.copyTemplate("gulpfile.coffee")
       .then (result)-> self.copyTemplate("index.coffee", path.join("src", "index.coffee"))

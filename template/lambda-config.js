@@ -1,6 +1,6 @@
 
 module.exports = {
-  FunctionName: "xxx",
+  FunctionName: "FUNCTION-NAME",
   Description: "TODO",
   Handler: "index.handler",
   Role: "arn:aws:iam::ACCOUNTID:role/ROLENAME",
