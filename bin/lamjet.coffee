@@ -43,40 +43,42 @@ class LamjetCommand
             else
               resolve(filePath: filePath, body: body)
 
+  makePackageJson: (options)->
+    self = this
+    functionName = options?.functionName ? throw new Error("functionName")
+    return self.readTemplate("package.json")
+      .then (result)->
+        result.body = result.body.replace(/FUNCTION-NAME/, functionName)
+        return Promise.resolve(result)
+      .then (result)-> self.writeArtifact("package.json", result.body)
+
+  copyTemplate: (source, destination)->
+    self = this
+    return self.readTemplate(source)
+      .then (result)-> self.writeArtifact((destination ? source), result.body)
+
+  run: ->
+
+
 if process.argv[2] == "init"
   lamjetCommand = new LamjetCommand(process.argv)
   console.log lamjetCommand
 
-  toolPath     = path.join(path.dirname(process.argv[1]), "..")
-  templatePath = path.join(toolPath, "template")
-  artifactPath = path.resolve()
-
   defaultFunctionName = path.basename(path.resolve())
 
-  makePackageJson = (options)->
-    functionName = options?.functionName ? throw new Error("functionName")
-    return lamjetCommand.readTemplate("package.json")
-      .then (result)->
-        result.body = result.body.replace(/FUNCTION-NAME/, functionName)
-        return Promise.resolve(result)
-      .then (result)-> lamjetCommand.writeArtifact("package.json", result.body)
-
-  copyTemplate = (source, destination)->
-    return lamjetCommand.readTemplate(source)
-      .then (result)-> lamjetCommand.writeArtifact((destination ? source), result.body)
-
   Promise.resolve()
-    .then (result)-> makePackageJson(functionName: defaultFunctionName)
-    .then (result)-> copyTemplate("lambda-config.js")
-    .then (result)-> copyTemplate("gitignore", ".gitignore")
-    .then (result)-> copyTemplate("gulpfile.coffee")
-    .then (result)-> copyTemplate("index.coffee", path.join("src", "index.coffee"))
-    .then (result)-> copyTemplate("index_spec.coffee", path.join("src", "index_spec.coffee"))
+    .then (result)-> lamjetCommand.makePackageJson(functionName: defaultFunctionName)
+    .then (result)-> lamjetCommand.copyTemplate("lambda-config.js")
+    .then (result)-> lamjetCommand.copyTemplate("gitignore", ".gitignore")
+    .then (result)-> lamjetCommand.copyTemplate("gulpfile.coffee")
+    .then (result)-> lamjetCommand.copyTemplate("index.coffee", path.join("src", "index.coffee"))
+    .then (result)-> lamjetCommand.copyTemplate("index_spec.coffee", path.join("src", "index_spec.coffee"))
     .then (result)->
       # console.log(JSON.stringify({then: result}, null, 2))
       console.log("initialized")
     .catch (result)->
       console.log(result)
+      console.log(result.stack) if result?.stack?
 
 else
   console.log "Usage: lamjet init"
