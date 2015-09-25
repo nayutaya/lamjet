@@ -41,18 +41,6 @@ if process.argv[2] == "init"
         return Promise.resolve(result)
       .then (result)-> writeArtifact("package.json", result.body)
 
-  makeLambdaConfigJs = ->
-    return readTemplate("lambda-config.js")
-      .then (result)-> writeArtifact("lambda-config.js", result.body)
-
-  makeGitIgnore = ->
-    return readTemplate("gitignore")
-      .then (result)-> writeArtifact(".gitignore", result.body)
-
-  makeGulpfileCoffee = ->
-    return readTemplate("gulpfile.coffee")
-      .then (result)-> writeArtifact("gulpfile.coffee", result.body)
-
   copyTemplate = (source, destination)->
     return readTemplate(source)
       .then (result)-> writeArtifact((destination ? source), result.body)
@@ -64,13 +52,14 @@ if process.argv[2] == "init"
 
   Promise.resolve()
     .then (result)-> makePackageJson(functionName: defaultFunctionName)
-    .then (result)-> makeLambdaConfigJs()
-    .then (result)-> makeGitIgnore()
-    .then (result)-> makeGulpfileCoffee()
+    .then (result)-> copyTemplate("lambda-config.js")
+    .then (result)-> copyTemplate("gitignore", ".gitignore")
+    .then (result)-> copyTemplate("gulpfile.coffee")
     .then (result)-> copyTemplate("index.coffee", path.join("src", "index.coffee"))
     .then (result)-> copyTemplate("index_spec.coffee", path.join("src", "index_spec.coffee"))
     .then (result)->
-      console.log(JSON.stringify({then: result}, null, 2))
+      # console.log(JSON.stringify({then: result}, null, 2))
+      console.log("ok")
 
 else
   console.log "Usage: lamjet init"
