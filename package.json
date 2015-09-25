@@ -32,5 +32,8 @@
     "gulp-jasmine": "^2.1.0",
     "gulp-util": "^3.0.6",
     "jasmine": "^2.3.2"
+  },
+  "dependencies": {
+    "promise": "^7.0.4"
   }
 }
