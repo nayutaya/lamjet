@@ -24,6 +24,10 @@
     "url": "https://github.com/nayutaya/lamjet/issues"
   },
   "homepage": "https://github.com/nayutaya/lamjet",
+  "dependencies": {
+    "mkdirp": "^0.5.1",
+    "promise": "^7.0.4"
+  },
   "devDependencies": {
     "coffee-script": "^1.10.0",
     "del": "^2.0.2",
@@ -32,8 +36,5 @@
     "gulp-jasmine": "^2.1.0",
     "gulp-util": "^3.0.6",
     "jasmine": "^2.3.2"
-  },
-  "dependencies": {
-    "promise": "^7.0.4"
   }
 }

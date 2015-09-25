@@ -1,14 +1,16 @@
 
-fs   = require("fs")
-path = require("path")
+fs      = require("fs")
+path    = require("path")
+mkdirp  = require("mkdirp")
 Promise = require("promise")
 
 console.log "lamjet"
 # TODO: バージョン番号を出力する
 
 if process.argv[2] == "init"
-  toolPath = path.join(path.dirname(process.argv[1]), "..")
+  toolPath     = path.join(path.dirname(process.argv[1]), "..")
   templatePath = path.join(toolPath, "template")
+  artifactPath = path.resolve()
 
   readTemplate = (fileName)->
     filePath = path.join(templatePath, fileName)
@@ -19,15 +21,23 @@ if process.argv[2] == "init"
         else
           resolve(filePath: filePath, body: body)
 
-  basePath = path.resolve()
   writeArtifact = (fileName, body)->
-    filePath = path.join(basePath, fileName)
-    return new Promise (resolve, reject)->
-      fs.writeFile filePath, body, {encoding: "utf8", flag: "w"}, (error)->
-        if error?
-          reject(filePath: filePath, error: error)
-        else
-          resolve(filePath: filePath, body: body)
+    filePath = path.join(artifactPath, fileName)
+    return Promise.resolve()
+      .then (result)->
+        return new Promise (resolve, reject)->
+          mkdirp path.dirname(filePath), (error)->
+            if error?
+              reject(error: error)
+            else
+              resolve()
+      .then (result)->
+        return new Promise (resolve, reject)->
+          fs.writeFile filePath, body, {encoding: "utf8", flag: "w"}, (error)->
+            if error?
+              reject(filePath: filePath, error: error)
+            else
+              resolve(filePath: filePath, body: body)
 
   defaultFunctionName = path.basename(path.resolve())
 
@@ -45,11 +55,6 @@ if process.argv[2] == "init"
     return readTemplate(source)
       .then (result)-> writeArtifact((destination ? source), result.body)
 
-  srcPath = path.join(path.resolve(), "src")
-  console.log srcPath
-  if !fs.existsSync(srcPath)
-    fs.mkdirSync(srcPath)
-
   Promise.resolve()
     .then (result)-> makePackageJson(functionName: defaultFunctionName)
     .then (result)-> copyTemplate("lambda-config.js")
@@ -59,7 +64,9 @@ if process.argv[2] == "init"
     .then (result)-> copyTemplate("index_spec.coffee", path.join("src", "index_spec.coffee"))
     .then (result)->
       # console.log(JSON.stringify({then: result}, null, 2))
-      console.log("ok")
+      console.log("initialized")
+    .catch (result)->
+      console.log(result)
 
 else
   console.log "Usage: lamjet init"
