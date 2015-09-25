@@ -101,12 +101,9 @@ if process.argv[2] == "init"
   if !fs.existsSync(srcPath)
     fs.mkdirSync(srcPath)
 
-  indexCoffee = """
-    # index.coffee
-    exports.handler = (event, context)->
-      console.log(JSON.stringify({event: event, context: context}, null, 2))
-      context.succeed({event: event, context: context})
-  """
+  toolPath = path.join(path.dirname(process.argv[1]), "..")
+  templatePath = path.join(toolPath, "template")
+  indexCoffee     = fs.readFileSync(path.join(templatePath, "index.coffee"), encoding: "utf8")
   indexCoffeePath = path.join(srcPath, "index.coffee")
   console.log indexCoffee
   console.log indexCoffeePath
