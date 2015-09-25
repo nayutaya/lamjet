@@ -7,6 +7,9 @@ console.log "lamjet"
 # TODO: バージョン番号を出力する
 
 if process.argv[2] == "init"
+  toolPath = path.join(path.dirname(process.argv[1]), "..")
+  templatePath = path.join(toolPath, "template")
+
   defaultFunctionName = path.basename(path.resolve())
   defaultVersion      = "1.0.0"
 
@@ -65,44 +68,17 @@ if process.argv[2] == "init"
   console.log gitignorePath
   fs.writeFileSync(gitignorePath, gitignore + "\n", encoding: "utf8", flag: "w")
 
-  gulpfileCoffee = """
-    gulp        = require "gulp"
-    coffee      = require "gulp-coffee"
-    gutil       = require "gulp-util"
-    jasmine     = require "gulp-jasmine"
-    lambduhGulp = require "lambduh-gulp"
-
-    lambduhGulp gulp
-
-    gulp.task "js", ->
-      gulp.src("./src/*.coffee")
-        .pipe(coffee()).on("error", gutil.log)
-        .pipe(gulp.dest("./dist"))
-
-    gulp.task "test", ->
-      gulp.src("./dist/*_spec.js")
-        .pipe(jasmine({includeStackTrace: false}))
-
-    gulp.task "auto-test", ->
-      gulp.watch("./src/*.coffee", ["default"])
-      gulp.start("default")
-
-    gulp.task "default", ["js"], ->
-      gulp.start("test")
-  """
+  gulpfileCoffee     = fs.readFileSync(path.join(templatePath, "gulpfile.coffee"), encoding: "utf8")
   gulpfileCoffeePath = path.join(path.resolve(), "gulpfile.coffee")
   console.log gulpfileCoffee
   console.log gulpfileCoffeePath
   fs.writeFileSync(gulpfileCoffeePath, gulpfileCoffee + "\n", encoding: "utf8", flag: "w")
 
-  # fs.mkdirSync()
   srcPath = path.join(path.resolve(), "src")
   console.log srcPath
   if !fs.existsSync(srcPath)
     fs.mkdirSync(srcPath)
 
-  toolPath = path.join(path.dirname(process.argv[1]), "..")
-  templatePath = path.join(toolPath, "template")
   indexCoffee     = fs.readFileSync(path.join(templatePath, "index.coffee"), encoding: "utf8")
   indexCoffeePath = path.join(srcPath, "index.coffee")
   console.log indexCoffee
