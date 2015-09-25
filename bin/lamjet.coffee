@@ -27,24 +27,23 @@ if process.argv[2] == "init"
         if error?
           reject(filePath: filePath, error: error)
         else
-          resolve(filePath: filePath)
+          resolve(filePath: filePath, body: body)
 
   defaultFunctionName = path.basename(path.resolve())
 
   # TODO: 「package.json」が存在する場合、上書きの有無を確認する。
-  readTemplate("package.json")
+
+  makePackageJson = (options)->
+    functionName = options?.functionName ? throw new Error("functionName")
+    return readTemplate("package.json")
+      .then (result)->
+        result.body = result.body.replace(/FUNCTION-NAME/, functionName)
+        return Promise.resolve(result)
+      .then (result)-> writeArtifact("package.json", result.body)
+
+  makePackageJson(functionName: defaultFunctionName)
     .then (result)->
       console.log(JSON.stringify({then: result}, null, 2))
-      return Promise.resolve(body: result.body.replace(/FUNCTION-NAME/, defaultFunctionName))
-    .then (result)->
-      console.log(JSON.stringify({then: result}, null, 2))
-      return Promise.resolve(result)
-    .then (result)->
-      return writeArtifact("package.json", result.body)
-    .then (result)->
-      console.log(JSON.stringify({then: result}, null, 2))
-    .catch (result)->
-      console.log(JSON.stringify({catch: result}, null, 2))
 
   lambdaConfigJs     = fs.readFileSync(path.join(templatePath, "lambda-config.js"), encoding: "utf8")
   lambdaConfigJsPath = path.join(path.resolve(), "lambda-config.js")
