@@ -109,33 +109,7 @@ if process.argv[2] == "init"
   console.log indexCoffeePath
   fs.writeFileSync(indexCoffeePath, indexCoffee + "\n", encoding: "utf8", flag: "w")
 
-  indexSpecCoffee = """
-    # index_spec.coffee
-    index = require "./index"
-
-    describe "index", ->
-      originalTimeout = null
-
-      beforeEach ->
-        originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL
-        jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000 * 10
-
-      afterEach ->
-        jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout
-
-      describe ".handler", ->
-        it "", (done)->
-          event = {
-          }
-          context = {
-            succeed: ->
-              done()
-            fail: ->
-              fail()
-              done()
-          }
-          index.handler(event, context)
-  """
+  indexSpecCoffee     = fs.readFileSync(path.join(templatePath, "index_spec.coffee"), encoding: "utf8")
   indexSpecCoffeePath = path.join(srcPath, "index_spec.coffee")
   console.log indexSpecCoffee
   console.log indexSpecCoffeePath
