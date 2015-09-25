@@ -45,19 +45,16 @@ if process.argv[2] == "init"
     return readTemplate("lambda-config.js")
       .then (result)-> writeArtifact("lambda-config.js", result.body)
 
+  makeGitIgnore = ->
+    return readTemplate("gitignore")
+      .then (result)-> writeArtifact(".gitignore", result.body)
+
   Promise.resolve()
     .then (result)-> makePackageJson(functionName: defaultFunctionName)
-    .then (result)->
-      console.log(JSON.stringify({then: result}, null, 2))
     .then (result)-> makeLambdaConfigJs()
+    .then (result)-> makeGitIgnore()
     .then (result)->
       console.log(JSON.stringify({then: result}, null, 2))
-
-  gitignore     = fs.readFileSync(path.join(templatePath, "gitignore"), encoding: "utf8")
-  gitignorePath = path.join(path.resolve(), ".gitignore")
-  console.log gitignore
-  console.log gitignorePath
-  fs.writeFileSync(gitignorePath, gitignore, encoding: "utf8", flag: "w")
 
   gulpfileCoffee     = fs.readFileSync(path.join(templatePath, "gulpfile.coffee"), encoding: "utf8")
   gulpfileCoffeePath = path.join(path.resolve(), "gulpfile.coffee")
