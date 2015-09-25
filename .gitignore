@@ -1,4 +1,4 @@
 /bin/*.js
-/lib/
+/lib/*.js
 /node_modules/
 /*.tgz
