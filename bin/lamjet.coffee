@@ -10,7 +10,7 @@ if process.argv[2] == "init"
   defaultFunctionName = path.basename(path.resolve())
   defaultVersion      = "1.0.0"
 
-  packageInfo = {
+  packageJson = JSON.stringify({
     private: true,
     name: defaultFunctionName,
     version: defaultVersion,
@@ -31,14 +31,29 @@ if process.argv[2] == "init"
       "jasmine": "^2.3.2",
       "lambduh-gulp": "^0.1.6",
     },
-  }
+  }, null, 2)
 
   # TODO: 「package.json」が存在する場合、上書きの有無を確認する。
   packageJsonPath = path.join(path.resolve(), "package.json")
-  packageJson     = JSON.stringify(packageInfo, null, 2)
   console.log packageJson
+  console.log packageJsonPath
   fs.writeFileSync(packageJsonPath, packageJson, encoding: "utf8", flag: "w")
 
-
+  lambdaConfigJs = """
+    module.exports = {
+      FunctionName: "xxx",
+      Description: "TODO",
+      Handler: "index.handler",
+      Role: "arn:aws:iam::ACCOUNTID:role/ROLENAME",
+      Region: "REGION",
+      Runtime: "nodejs",
+      MemorySize: 128,
+      Timeout: 3
+    }
+  """
+  lambdaConfigJsPath = path.join(path.resolve(), "lambda-config.js")
+  console.log lambdaConfigJs
+  console.log lambdaConfigJsPath
+  fs.writeFileSync(lambdaConfigJsPath, lambdaConfigJs, encoding: "utf8", flag: "w")
 else
   console.log "Usage: lamjet init"
