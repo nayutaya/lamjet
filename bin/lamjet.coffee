@@ -17,9 +17,8 @@ if process.argv[2] == "init"
     description: "TODO:",
     scripts: {
       test: "gulp",
-      zip: "echo TODO",
-      upload: "echo TODO",
-      deploy: "echo TODO",
+      zip: "gulp lambda-zip",
+      deploy: "gulp zipload",
     },
     dependencies: {},
     devDependencies: {
@@ -95,5 +94,25 @@ if process.argv[2] == "init"
   console.log gulpfileCoffee
   console.log gulpfileCoffeePath
   fs.writeFileSync(gulpfileCoffeePath, gulpfileCoffee + "\n", encoding: "utf8", flag: "w")
+
+  # fs.mkdirSync()
+  srcPath = path.join(path.resolve(), "src")
+  console.log srcPath
+  if !fs.existsSync(srcPath)
+    fs.mkdirSync(srcPath)
+
+  indexCoffee = """
+  """
+  indexCoffeePath = path.join(srcPath, "index.coffee")
+  console.log indexCoffee
+  console.log indexCoffeePath
+  fs.writeFileSync(indexCoffeePath, indexCoffee + "\n", encoding: "utf8", flag: "w")
+
+  indexSpecCoffee = """
+  """
+  indexSpecCoffeePath = path.join(srcPath, "index_spec.coffee")
+  console.log indexSpecCoffee
+  console.log indexSpecCoffeePath
+  fs.writeFileSync(indexSpecCoffeePath, indexSpecCoffee + "\n", encoding: "utf8", flag: "w")
 else
   console.log "Usage: lamjet init"
