@@ -6,7 +6,7 @@ Promise = require("promise")
 
 module.exports = class LamjetCommand
   constructor: (@argv, @print)->
-    @toolPath     = path.join(path.dirname(@argv[1]), "..")
+    @toolPath     = path.join(__dirname, "..")
     @templatePath = path.join(@toolPath, "template")
     @currentPath  = path.resolve()
     @artifactPath = @currentPath
