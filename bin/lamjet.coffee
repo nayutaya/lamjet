@@ -7,13 +7,15 @@ Promise = require("promise")
 console.log "lamjet"
 # TODO: バージョン番号を出力する
 
-if process.argv[2] == "init"
-  toolPath     = path.join(path.dirname(process.argv[1]), "..")
-  templatePath = path.join(toolPath, "template")
-  artifactPath = path.resolve()
+class LamjetCommand
+  constructor: (@argv)->
+    @toolPath     = path.join(path.dirname(@argv[1]), "..")
+    @templatePath = path.join(@toolPath, "template")
+    @currentPath  = path.resolve()
+    @artifactPath = @currentPath
 
-  readTemplate = (fileName)->
-    filePath = path.join(templatePath, fileName)
+  readTemplate: (fileName)->
+    filePath = path.join(@templatePath, fileName)
     return new Promise (resolve, reject)->
       fs.readFile filePath, {encoding: "utf8"}, (error, body)->
         if error?
@@ -21,8 +23,8 @@ if process.argv[2] == "init"
         else
           resolve(filePath: filePath, body: body)
 
-  writeArtifact = (fileName, body)->
-    filePath = path.join(artifactPath, fileName)
+  writeArtifact: (fileName, body)->
+    filePath = path.join(@artifactPath, fileName)
     return Promise.resolve()
       .then (result)->
         return new Promise (resolve, reject)->
@@ -41,19 +43,27 @@ if process.argv[2] == "init"
             else
               resolve(filePath: filePath, body: body)
 
+if process.argv[2] == "init"
+  lamjetCommand = new LamjetCommand(process.argv)
+  console.log lamjetCommand
+
+  toolPath     = path.join(path.dirname(process.argv[1]), "..")
+  templatePath = path.join(toolPath, "template")
+  artifactPath = path.resolve()
+
   defaultFunctionName = path.basename(path.resolve())
 
   makePackageJson = (options)->
     functionName = options?.functionName ? throw new Error("functionName")
-    return readTemplate("package.json")
+    return lamjetCommand.readTemplate("package.json")
       .then (result)->
         result.body = result.body.replace(/FUNCTION-NAME/, functionName)
         return Promise.resolve(result)
-      .then (result)-> writeArtifact("package.json", result.body)
+      .then (result)-> lamjetCommand.writeArtifact("package.json", result.body)
 
   copyTemplate = (source, destination)->
-    return readTemplate(source)
-      .then (result)-> writeArtifact((destination ? source), result.body)
+    return lamjetCommand.readTemplate(source)
+      .then (result)-> lamjetCommand.writeArtifact((destination ? source), result.body)
 
   Promise.resolve()
     .then (result)-> makePackageJson(functionName: defaultFunctionName)
