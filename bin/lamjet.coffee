@@ -10,15 +10,41 @@ if process.argv[2] == "init"
   toolPath = path.join(path.dirname(process.argv[1]), "..")
   templatePath = path.join(toolPath, "template")
 
+  readTemplate = (fileName)->
+    filePath = path.join(templatePath, fileName)
+    return new Promise (resolve, reject)->
+      fs.readFile filePath, {encoding: "utf8"}, (error, body)->
+        if error?
+          reject(filePath: filePath, error: error)
+        else
+          resolve(filePath: filePath, body: body)
+
+  basePath = path.resolve()
+  writeArtifact = (fileName, body)->
+    filePath = path.join(basePath, fileName)
+    return new Promise (resolve, reject)->
+      fs.writeFile filePath, body, {encoding: "utf8", flag: "w"}, (error)->
+        if error?
+          reject(filePath: filePath, error: error)
+        else
+          resolve(filePath: filePath)
+
   defaultFunctionName = path.basename(path.resolve())
 
-  packageJson = fs.readFileSync(path.join(templatePath, "package.json"), encoding: "utf8")
-  packageJson = packageJson.replace(/FUNCTION-NAME/, defaultFunctionName)
   # TODO: 「package.json」が存在する場合、上書きの有無を確認する。
-  packageJsonPath = path.join(path.resolve(), "package.json")
-  console.log packageJson
-  console.log packageJsonPath
-  fs.writeFileSync(packageJsonPath, packageJson + "\n", encoding: "utf8", flag: "w")
+  readTemplate("package.json")
+    .then (result)->
+      console.log(JSON.stringify({then: result}, null, 2))
+      return Promise.resolve(body: result.body.replace(/FUNCTION-NAME/, defaultFunctionName))
+    .then (result)->
+      console.log(JSON.stringify({then: result}, null, 2))
+      return Promise.resolve(result)
+    .then (result)->
+      return writeArtifact("package.json", result.body)
+    .then (result)->
+      console.log(JSON.stringify({then: result}, null, 2))
+    .catch (result)->
+      console.log(JSON.stringify({catch: result}, null, 2))
 
   lambdaConfigJs     = fs.readFileSync(path.join(templatePath, "lambda-config.js"), encoding: "utf8")
   lambdaConfigJsPath = path.join(path.resolve(), "lambda-config.js")
