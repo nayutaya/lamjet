@@ -57,28 +57,28 @@ class LamjetCommand
     return self.readTemplate(source)
       .then (result)-> self.writeArtifact((destination ? source), result.body)
 
+  init: ->
+    self = this
+    defaultFunctionName = path.basename(path.resolve())
+    return Promise.resolve()
+      .then (result)-> self.makePackageJson(functionName: defaultFunctionName)
+      .then (result)-> self.copyTemplate("lambda-config.js")
+      .then (result)-> self.copyTemplate("gitignore", ".gitignore")
+      .then (result)-> self.copyTemplate("gulpfile.coffee")
+      .then (result)-> self.copyTemplate("index.coffee", path.join("src", "index.coffee"))
+      .then (result)-> self.copyTemplate("index_spec.coffee", path.join("src", "index_spec.coffee"))
+
   run: ->
+    if @argv[2] == "init"
+      @init()
+        .then (result)->
+          # console.log(JSON.stringify({then: result}, null, 2))
+          console.log("initialized")
+        .catch (result)->
+          console.log(result)
+          console.log(result.stack) if result?.stack?
+    else
+      console.log("Usage: lamjet init")
 
-
-if process.argv[2] == "init"
-  lamjetCommand = new LamjetCommand(process.argv)
-  console.log lamjetCommand
-
-  defaultFunctionName = path.basename(path.resolve())
-
-  Promise.resolve()
-    .then (result)-> lamjetCommand.makePackageJson(functionName: defaultFunctionName)
-    .then (result)-> lamjetCommand.copyTemplate("lambda-config.js")
-    .then (result)-> lamjetCommand.copyTemplate("gitignore", ".gitignore")
-    .then (result)-> lamjetCommand.copyTemplate("gulpfile.coffee")
-    .then (result)-> lamjetCommand.copyTemplate("index.coffee", path.join("src", "index.coffee"))
-    .then (result)-> lamjetCommand.copyTemplate("index_spec.coffee", path.join("src", "index_spec.coffee"))
-    .then (result)->
-      # console.log(JSON.stringify({then: result}, null, 2))
-      console.log("initialized")
-    .catch (result)->
-      console.log(result)
-      console.log(result.stack) if result?.stack?
-
-else
-  console.log "Usage: lamjet init"
+lamjetCommand = new LamjetCommand(process.argv)
+lamjetCommand.run()
