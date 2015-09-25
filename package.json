@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/nayutaya/lamjet",
   "dependencies": {
+    "lambduh-gulp": "^0.1.6",
     "mkdirp": "^0.5.1",
     "promise": "^7.0.4"
   },
