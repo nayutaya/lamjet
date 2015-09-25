@@ -5,7 +5,7 @@ mkdirp  = require("mkdirp")
 Promise = require("promise")
 
 module.exports = class LamjetCommand
-  constructor: (@argv)->
+  constructor: (@argv, @print)->
     @toolPath     = path.join(path.dirname(@argv[1]), "..")
     @templatePath = path.join(@toolPath, "template")
     @currentPath  = path.resolve()
@@ -21,6 +21,7 @@ module.exports = class LamjetCommand
           resolve(filePath: filePath, body: body)
 
   writeArtifact: (fileName, body)->
+    self = this
     filePath = path.join(@artifactPath, fileName)
     return Promise.resolve()
       .then (result)->
@@ -33,7 +34,7 @@ module.exports = class LamjetCommand
       .then (result)->
         return new Promise (resolve, reject)->
           # TODO: ファイルが存在する場合、上書きの有無を確認する。
-          console.log("write #{filePath}...")
+          self.print("write #{filePath}")
           fs.writeFile filePath, body, {encoding: "utf8", flag: "w"}, (error)->
             if error?
               reject(filePath: filePath, error: error)
@@ -66,15 +67,15 @@ module.exports = class LamjetCommand
       .then (result)-> self.copyTemplate("index_spec.coffee", path.join("src", "index_spec.coffee"))
 
   run: ->
-    console.log("lamjet v" + require("../package.json").version)
-
-    if @argv[2] == "init"
-      @init()
+    self = this
+    self.print("lamjet v" + require("../package.json").version)
+    if self.argv[2] == "init"
+      self.init()
         .then (result)->
-          # console.log(JSON.stringify({then: result}, null, 2))
-          console.log("initialized")
+          # self.print(JSON.stringify({then: result}, null, 2))
+          self.print("initialized")
         .catch (result)->
-          console.log(result)
-          console.log(result.stack) if result?.stack?
+          self.print(result)
+          self.print(result.stack) if result?.stack?
     else
-      console.log("Usage: lamjet init")
+      self.print("Usage: lamjet init")
