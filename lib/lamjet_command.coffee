@@ -66,8 +66,7 @@ module.exports = class LamjetCommand
       .then (result)-> self.copyTemplate("index_spec.coffee", path.join("src", "index_spec.coffee"))
 
   run: ->
-    console.log("lamjet")
-    # TODO: バージョン番号を出力する
+    console.log("lamjet v" + require("../package.json").version)
 
     if @argv[2] == "init"
       @init()
