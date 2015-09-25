@@ -41,15 +41,17 @@ if process.argv[2] == "init"
         return Promise.resolve(result)
       .then (result)-> writeArtifact("package.json", result.body)
 
-  makePackageJson(functionName: defaultFunctionName)
+  makeLambdaConfigJs = ->
+    return readTemplate("lambda-config.js")
+      .then (result)-> writeArtifact("lambda-config.js", result.body)
+
+  Promise.resolve()
+    .then (result)-> makePackageJson(functionName: defaultFunctionName)
     .then (result)->
       console.log(JSON.stringify({then: result}, null, 2))
-
-  lambdaConfigJs     = fs.readFileSync(path.join(templatePath, "lambda-config.js"), encoding: "utf8")
-  lambdaConfigJsPath = path.join(path.resolve(), "lambda-config.js")
-  console.log lambdaConfigJs
-  console.log lambdaConfigJsPath
-  fs.writeFileSync(lambdaConfigJsPath, lambdaConfigJs, encoding: "utf8", flag: "w")
+    .then (result)-> makeLambdaConfigJs()
+    .then (result)->
+      console.log(JSON.stringify({then: result}, null, 2))
 
   gitignore     = fs.readFileSync(path.join(templatePath, "gitignore"), encoding: "utf8")
   gitignorePath = path.join(path.resolve(), ".gitignore")
