@@ -1,0 +1,26 @@
+{
+  "name": "lamjet",
+  "version": "0.0.1",
+  "description": "TODO",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "gulp"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nayutaya/lamjet.git"
+  },
+  "keywords": [
+    "AWS",
+    "Lambda",
+    "Jasmine",
+    "Coffee",
+    "CoffeeScript"
+  ],
+  "author": "Yuya Kato (Nayutaya Inc.)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nayutaya/lamjet/issues"
+  },
+  "homepage": "https://github.com/nayutaya/lamjet"
+}
