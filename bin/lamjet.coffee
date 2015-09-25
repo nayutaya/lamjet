@@ -11,30 +11,9 @@ if process.argv[2] == "init"
   templatePath = path.join(toolPath, "template")
 
   defaultFunctionName = path.basename(path.resolve())
-  defaultVersion      = "1.0.0"
 
-  packageJson = JSON.stringify({
-    private: true,
-    name: defaultFunctionName,
-    version: defaultVersion,
-    description: "TODO:",
-    scripts: {
-      test: "gulp",
-      zip: "gulp lambda-zip",
-      deploy: "gulp zipload",
-    },
-    dependencies: {},
-    devDependencies: {
-      "coffee-script": "^1.10.0",
-      "gulp": "^3.9.0",
-      "gulp-coffee": "^2.3.1",
-      "gulp-jasmine": "^2.1.0",
-      "gulp-util": "^3.0.6",
-      "jasmine": "^2.3.2",
-      "lambduh-gulp": "^0.1.6",
-    },
-  }, null, 2)
-
+  packageJson = fs.readFileSync(path.join(templatePath, "package.json"), encoding: "utf8")
+  packageJson = packageJson.replace(/FUNCTION-NAME/, defaultFunctionName)
   # TODO: 「package.json」が存在する場合、上書きの有無を確認する。
   packageJsonPath = path.join(path.resolve(), "package.json")
   console.log packageJson
