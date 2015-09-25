@@ -6,13 +6,13 @@ jasmine = require "gulp-jasmine"
 del     = require "del"
 
 gulp.task "clean", (callback)->
-  del("./lib", callback)
+  del(["./lib", "./bin/*.js"], callback)
 
 gulp.task "build", ->
   gulp.src(["./src/*.coffee"])
     .pipe(coffee()).on("error", gutil.log)
     .pipe(gulp.dest("./lib"))
-  gulp.src(["./bin_src/*.coffee"])
+  gulp.src(["./bin/*.coffee"])
     .pipe(coffee()).on("error", gutil.log)
     .pipe(gulp.dest("./bin"))
 
