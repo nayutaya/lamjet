@@ -65,5 +65,35 @@ if process.argv[2] == "init"
   console.log gitignore
   console.log gitignorePath
   fs.writeFileSync(gitignorePath, gitignore + "\n", encoding: "utf8", flag: "w")
+
+  gulpfileCoffee = """
+    gulp        = require "gulp"
+    coffee      = require "gulp-coffee"
+    gutil       = require "gulp-util"
+    jasmine     = require "gulp-jasmine"
+    lambduhGulp = require "lambduh-gulp"
+
+    lambduhGulp gulp
+
+    gulp.task "js", ->
+      gulp.src("./src/*.coffee")
+        .pipe(coffee()).on("error", gutil.log)
+        .pipe(gulp.dest("./dist"))
+
+    gulp.task "test", ->
+      gulp.src("./dist/*_spec.js")
+        .pipe(jasmine({includeStackTrace: false}))
+
+    gulp.task "auto-test", ->
+      gulp.watch("./src/*.coffee", ["default"])
+      gulp.start("default")
+
+    gulp.task "default", ["js"], ->
+      gulp.start("test")
+  """
+  gulpfileCoffeePath = path.join(path.resolve(), "gulpfile.coffee")
+  console.log gulpfileCoffee
+  console.log gulpfileCoffeePath
+  fs.writeFileSync(gulpfileCoffeePath, gulpfileCoffee + "\n", encoding: "utf8", flag: "w")
 else
   console.log "Usage: lamjet init"
