@@ -19,6 +19,14 @@ module.exports = class LamjetCommand
         else
           resolve(filePath: filePath, body: body)
 
+  writeFile: (filePath, body)->
+    return new Promise (resolve, reject)->
+      fs.writeFile filePath, body, {encoding: "utf8", flag: "w"}, (error)->
+        if error?
+          reject(filePath: filePath, error: error)
+        else
+          resolve(filePath: filePath, body: body)
+
   makeDirectory: (dirPath)->
     return new Promise (resolve, reject)->
       mkdirp dirPath, (error)->
@@ -36,14 +44,9 @@ module.exports = class LamjetCommand
     return Promise.resolve()
       .then (result)-> self.makeDirectory(path.dirname(filePath))
       .then (result)->
-        return new Promise (resolve, reject)->
-          # TODO: ファイルが存在する場合、上書きの有無を確認する。
-          self.print("write #{filePath}")
-          fs.writeFile filePath, body, {encoding: "utf8", flag: "w"}, (error)->
-            if error?
-              reject(filePath: filePath, error: error)
-            else
-              resolve(filePath: filePath, body: body)
+        # TODO: ファイルが存在する場合、上書きの有無を確認する。
+        self.print("write #{filePath}")
+        return self.writeFile(filePath, body)
 
   makePackageJson: (options)->
     self = this
