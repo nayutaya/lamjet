@@ -33,6 +33,8 @@ if process.argv[2] == "init"
               resolve()
       .then (result)->
         return new Promise (resolve, reject)->
+          # TODO: ファイルが存在する場合、上書きの有無を確認する。
+          console.log("write #{filePath}...")
           fs.writeFile filePath, body, {encoding: "utf8", flag: "w"}, (error)->
             if error?
               reject(filePath: filePath, error: error)
@@ -40,8 +42,6 @@ if process.argv[2] == "init"
               resolve(filePath: filePath, body: body)
 
   defaultFunctionName = path.basename(path.resolve())
-
-  # TODO: 「package.json」が存在する場合、上書きの有無を確認する。
 
   makePackageJson = (options)->
     functionName = options?.functionName ? throw new Error("functionName")
