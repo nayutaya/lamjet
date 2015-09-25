@@ -1,3 +1,3 @@
 
-module.exports = class WebMercator
+module.exports = class Index
   # TODO:
