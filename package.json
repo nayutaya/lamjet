@@ -2,7 +2,8 @@
   "name": "lamjet",
   "version": "0.0.1",
   "description": "TODO",
-  "main": "lib/index.js",
+  "bin": "./bin/lamjet.js",
+  "main": "./lib/index.js",
   "scripts": {
     "test": "gulp"
   },

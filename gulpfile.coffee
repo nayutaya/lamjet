@@ -12,6 +12,9 @@ gulp.task "build", ->
   gulp.src(["./src/*.coffee"])
     .pipe(coffee()).on("error", gutil.log)
     .pipe(gulp.dest("./lib"))
+  gulp.src(["./bin_src/*.coffee"])
+    .pipe(coffee()).on("error", gutil.log)
+    .pipe(gulp.dest("./bin"))
 
 gulp.task "test", ["build"], ->
   gulp.src("./lib/*_spec.js")
