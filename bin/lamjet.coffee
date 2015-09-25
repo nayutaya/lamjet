@@ -37,7 +37,7 @@ if process.argv[2] == "init"
   packageJsonPath = path.join(path.resolve(), "package.json")
   console.log packageJson
   console.log packageJsonPath
-  fs.writeFileSync(packageJsonPath, packageJson, encoding: "utf8", flag: "w")
+  fs.writeFileSync(packageJsonPath, packageJson + "\n", encoding: "utf8", flag: "w")
 
   lambdaConfigJs = """
     module.exports = {
@@ -54,6 +54,16 @@ if process.argv[2] == "init"
   lambdaConfigJsPath = path.join(path.resolve(), "lambda-config.js")
   console.log lambdaConfigJs
   console.log lambdaConfigJsPath
-  fs.writeFileSync(lambdaConfigJsPath, lambdaConfigJs, encoding: "utf8", flag: "w")
+  fs.writeFileSync(lambdaConfigJsPath, lambdaConfigJs + "\n", encoding: "utf8", flag: "w")
+
+  gitignore = """
+    /node_modules/
+    /dist/
+    /dist.zip
+  """
+  gitignorePath = path.join(path.resolve(), ".gitignore")
+  console.log gitignore
+  console.log gitignorePath
+  fs.writeFileSync(gitignorePath, gitignore + "\n", encoding: "utf8", flag: "w")
 else
   console.log "Usage: lamjet init"
