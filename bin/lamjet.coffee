@@ -22,15 +22,20 @@ if process.argv[2] == "init"
       deploy: "echo TODO",
     },
     dependencies: {},
-    devDependencies: {},
+    devDependencies: {
+      "coffee-script": "^1.10.0",
+      "gulp": "^3.9.0",
+      "gulp-coffee": "^2.3.1",
+      "gulp-jasmine": "^2.1.0",
+      "gulp-util": "^3.0.6",
+      "jasmine": "^2.3.2",
+      "lambduh-gulp": "^0.1.6",
+    },
   }
 
-
+  # TODO: 「package.json」が存在する場合、上書きの有無を確認する。
   packageJsonPath = path.join(path.resolve(), "package.json")
-  console.log packageJsonPath
-  exists = fs.existsSync(packageJsonPath)
-  console.log JSON.stringify({exists: exists}, null, 2)
-  packageJson = JSON.stringify(packageInfo, null, 2)
+  packageJson     = JSON.stringify(packageInfo, null, 2)
   console.log packageJson
   fs.writeFileSync(packageJsonPath, packageJson, encoding: "utf8", flag: "w")
 
