@@ -58,21 +58,17 @@ if process.argv[2] == "init"
   console.log lambdaConfigJsPath
   fs.writeFileSync(lambdaConfigJsPath, lambdaConfigJs + "\n", encoding: "utf8", flag: "w")
 
-  gitignore = """
-    /node_modules/
-    /dist/
-    /dist.zip
-  """
+  gitignore     = fs.readFileSync(path.join(templatePath, "gitignore"), encoding: "utf8")
   gitignorePath = path.join(path.resolve(), ".gitignore")
   console.log gitignore
   console.log gitignorePath
-  fs.writeFileSync(gitignorePath, gitignore + "\n", encoding: "utf8", flag: "w")
+  fs.writeFileSync(gitignorePath, gitignore, encoding: "utf8", flag: "w")
 
   gulpfileCoffee     = fs.readFileSync(path.join(templatePath, "gulpfile.coffee"), encoding: "utf8")
   gulpfileCoffeePath = path.join(path.resolve(), "gulpfile.coffee")
   console.log gulpfileCoffee
   console.log gulpfileCoffeePath
-  fs.writeFileSync(gulpfileCoffeePath, gulpfileCoffee + "\n", encoding: "utf8", flag: "w")
+  fs.writeFileSync(gulpfileCoffeePath, gulpfileCoffee, encoding: "utf8", flag: "w")
 
   srcPath = path.join(path.resolve(), "src")
   console.log srcPath
@@ -83,12 +79,12 @@ if process.argv[2] == "init"
   indexCoffeePath = path.join(srcPath, "index.coffee")
   console.log indexCoffee
   console.log indexCoffeePath
-  fs.writeFileSync(indexCoffeePath, indexCoffee + "\n", encoding: "utf8", flag: "w")
+  fs.writeFileSync(indexCoffeePath, indexCoffee, encoding: "utf8", flag: "w")
 
   indexSpecCoffee     = fs.readFileSync(path.join(templatePath, "index_spec.coffee"), encoding: "utf8")
   indexSpecCoffeePath = path.join(srcPath, "index_spec.coffee")
   console.log indexSpecCoffee
   console.log indexSpecCoffeePath
-  fs.writeFileSync(indexSpecCoffeePath, indexSpecCoffee + "\n", encoding: "utf8", flag: "w")
+  fs.writeFileSync(indexSpecCoffeePath, indexSpecCoffee, encoding: "utf8", flag: "w")
 else
   console.log "Usage: lamjet init"
