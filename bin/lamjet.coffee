@@ -41,22 +41,11 @@ if process.argv[2] == "init"
   console.log packageJsonPath
   fs.writeFileSync(packageJsonPath, packageJson + "\n", encoding: "utf8", flag: "w")
 
-  lambdaConfigJs = """
-    module.exports = {
-      FunctionName: "xxx",
-      Description: "TODO",
-      Handler: "index.handler",
-      Role: "arn:aws:iam::ACCOUNTID:role/ROLENAME",
-      Region: "REGION",
-      Runtime: "nodejs",
-      MemorySize: 128,
-      Timeout: 3
-    }
-  """
+  lambdaConfigJs     = fs.readFileSync(path.join(templatePath, "lambda-config.js"), encoding: "utf8")
   lambdaConfigJsPath = path.join(path.resolve(), "lambda-config.js")
   console.log lambdaConfigJs
   console.log lambdaConfigJsPath
-  fs.writeFileSync(lambdaConfigJsPath, lambdaConfigJs + "\n", encoding: "utf8", flag: "w")
+  fs.writeFileSync(lambdaConfigJsPath, lambdaConfigJs, encoding: "utf8", flag: "w")
 
   gitignore     = fs.readFileSync(path.join(templatePath, "gitignore"), encoding: "utf8")
   gitignorePath = path.join(path.resolve(), ".gitignore")
