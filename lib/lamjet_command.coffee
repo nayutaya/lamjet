@@ -108,9 +108,15 @@ module.exports = class LamjetCommand
       .then (result)-> self.question(stdout, stdin, "Role", defaultConfig.role)
       .then (result)-> config.role = result
       .then (result)-> self.question(stdout, stdin, "Memory size in MB", String(defaultConfig.memorySize))
-      .then (result)-> config.memorySize = Number(result)
+      .then (result)->
+        config.memorySize  = Number(result)
+        config.memorySize  = null if Number.isNaN(config.memorySize)
+        config.memorySize ?= defaultConfig.memorySize
       .then (result)-> self.question(stdout, stdin, "Timeout in sec", String(defaultConfig.timeout))
-      .then (result)-> config.timeout = Number(result)
+      .then (result)->
+        config.timeout  = Number(result)
+        config.timeout  = null if Number.isNaN(config.timeout)
+        config.timeout ?= defaultConfig.timeout
       .then (result)-> stdin.pause()
       .then (result)-> Promise.resolve(config)
 
