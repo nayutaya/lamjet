@@ -18,6 +18,10 @@ module.exports = class Lamjet
         .pipe(coffee()).on("error", gutil.log)
         .pipe(gulp.dest("./out"))
 
+    gulp.task "copy-package-json", ->
+      gulp.src("./package.json").
+        pipe(gulp.dest("./out"))
+
     # TODO: 「lambduh-gulp」に依存しないように修正する。
     lambduhGulp(gulp)
 
