@@ -5,8 +5,8 @@
   "description": "TODO:",
   "scripts": {
     "test": "gulp",
-    "zip": "gulp lambda-zip",
-    "deploy": "gulp zipload"
+    "build-zip": "gulp build-zip",
+    "deploy": "gulp deploy"
   },
   "dependencies": {
     "aws-sdk": "^2.2.4"
