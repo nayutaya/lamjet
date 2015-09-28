@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "FUNCTION-NAME",
+  "name": "{FUNCTION-NAME}",
   "version": "1.0.0",
   "description": "TODO:",
   "scripts": {

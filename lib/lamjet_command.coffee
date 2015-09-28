@@ -5,7 +5,7 @@ mkdirp  = require("mkdirp")
 Promise = require("promise")
 
 module.exports = class LamjetCommand
-  constructor: (@argv, @print)->
+  constructor: (@argv, @print, @stdout, @stdin)->
     @toolPath     = path.join(__dirname, "..")
     @templatePath = path.join(@toolPath, "template")
     @currentPath  = path.resolve()
@@ -50,19 +50,21 @@ module.exports = class LamjetCommand
 
   makePackageJson: (options)->
     self = this
-    functionName = options?.functionName ? throw new Error("functionName")
     return self.readTemplate("package.json")
       .then (result)->
-        result.body = result.body.replace(/FUNCTION-NAME/, functionName)
+        result.body = result.body.replace(/\{FUNCTION-NAME\}/, (options?.functionName ? throw new Error("functionName")))
         return Promise.resolve(result)
       .then (result)-> self.writeArtifact("package.json", result.body)
 
   makeLambdaConfigJs: (options)->
     self = this
-    functionName = options?.functionName ? throw new Error("functionName")
     return self.readTemplate("lambda-config.js")
       .then (result)->
-        result.body = result.body.replace(/FUNCTION-NAME/, functionName)
+        result.body = result.body.replace(/\{FUNCTION-NAME\}/, (options?.functionName ? throw new Error("functionName")))
+        result.body = result.body.replace(/\{REGION\}/,        (options?.region       ? throw new Error("region")))
+        result.body = result.body.replace(/\{ROLE\}/,          (options?.role         ? throw new Error("role")))
+        result.body = result.body.replace(/\{MEMORY-SIZE\}/,   (options?.memorySize   ? throw new Error("memorySize")))
+        result.body = result.body.replace(/\{TIMEOUT\}/,       (options?.timeout      ? throw new Error("timeout")))
         return Promise.resolve(result)
       .then (result)-> self.writeArtifact("lambda-config.js", result.body)
 
@@ -71,12 +73,72 @@ module.exports = class LamjetCommand
     return self.readTemplate(source)
       .then (result)-> self.writeArtifact((destination ? source), result.body)
 
+  question: (stdout, stdin, message, defaultValue)->
+    stdout.write "#{message} [#{defaultValue}] ? "
+    buffer  = ""
+    pattern = /^(.*?)\n/
+
+    return new Promise (resolve, reject)->
+      onReadable = ->
+        while chunk = stdin.read()
+          buffer += chunk
+        match = pattern.exec(buffer)
+        if match?
+          stdin.removeListener "readable", onReadable
+          stdin.removeListener "end", onEnd
+          if match[1] == ""
+            resolve(defaultValue)
+          else
+            resolve(match[1])
+
+      onEnd = ->
+        stdin.removeListener "readable", onReadable
+        stdin.removeListener "end", onEnd
+        reject()
+
+      stdin.on "readable", onReadable
+      stdin.on "end", onEnd
+
+  configuration: (stdout, stdin, defaultConfig)->
+    self = this
+    config = {}
+    return Promise.resolve()
+      .then (result)-> self.question(stdout, stdin, "Function name", defaultConfig.functionName)
+      .then (result)-> config.functionName = result
+      .then (result)-> self.question(stdout, stdin, "Region", defaultConfig.region)
+      .then (result)-> config.region = result
+      .then (result)-> self.question(stdout, stdin, "Role", defaultConfig.role)
+      .then (result)-> config.role = result
+      .then (result)-> self.question(stdout, stdin, "Memory size in MB", String(defaultConfig.memorySize))
+      .then (result)->
+        config.memorySize  = Number(result)
+        config.memorySize  = null if Number.isNaN(config.memorySize)
+        config.memorySize ?= defaultConfig.memorySize
+      .then (result)-> self.question(stdout, stdin, "Timeout in sec", String(defaultConfig.timeout))
+      .then (result)->
+        config.timeout  = Number(result)
+        config.timeout  = null if Number.isNaN(config.timeout)
+        config.timeout ?= defaultConfig.timeout
+      .then (result)-> stdin.pause()
+      .then (result)-> Promise.resolve(config)
+
   init: ->
     self = this
-    defaultFunctionName = path.basename(path.resolve())
+    defaultConfig = {
+      functionName: path.basename(path.resolve()),
+      region: "us-east-1",
+      role: "arn:aws:iam::ACCOUNTID:role/ROLENAME",
+      memorySize: 128,
+      timeout: 3,
+    }
+    config = null
     return Promise.resolve()
-      .then (result)-> self.makePackageJson(functionName: defaultFunctionName)
-      .then (result)-> self.makeLambdaConfigJs(functionName: defaultFunctionName)
+      .then (result)-> self.configuration(self.stdout, self.stdin, defaultConfig)
+      .then (result)->
+        # console.log(JSON.stringify({config: result}, null, 2))
+        config = result
+      .then (result)-> self.makePackageJson(config)
+      .then (result)-> self.makeLambdaConfigJs(config)
       .then (result)-> self.copyTemplate("gitignore", ".gitignore")
       .then (result)-> self.copyTemplate("gulpfile.coffee")
       .then (result)-> self.copyTemplate("index.coffee", path.join("src", "index.coffee"))

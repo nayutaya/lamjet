@@ -1,11 +1,13 @@
 
+package = require("./package.json")
+
 module.exports = {
-  FunctionName: "FUNCTION-NAME",
-  Description: "TODO",
+  FunctionName: package.name,
+  Description: "v" + package.version + ": " + package.description,
   Handler: "index.handler",
-  Role: "arn:aws:iam::ACCOUNTID:role/ROLENAME",
-  Region: "REGION",
+  Role: "{ROLE}",
+  Region: "{REGION}",
   Runtime: "nodejs",
-  MemorySize: 128,
-  Timeout: 3
+  MemorySize: {MEMORY-SIZE},
+  Timeout: {TIMEOUT}
 }
