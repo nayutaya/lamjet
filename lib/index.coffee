@@ -7,6 +7,7 @@ lambduhGulp = require "lambduh-gulp"
 del = require("del")
 install = require("gulp-install")
 zip = require("gulp-zip")
+runSequence = require("run-sequence")
 
 module.exports = class Lamjet
   @setup: (gulp)->
@@ -32,6 +33,15 @@ module.exports = class Lamjet
       gulp.src(["out/**/*"])
         .pipe(zip("out.zip"))
         .pipe(gulp.dest("./"))
+
+    gulp.task "build-zip", (callback)->
+      return runSequence(
+        ["myclean"],
+        ["mybuild"],
+        ["copy-package-json"],
+        ["install-dependencies"],
+        ["archive-to-zip"],
+        callback)
 
     # TODO: 「lambduh-gulp」に依存しないように修正する。
     lambduhGulp(gulp)

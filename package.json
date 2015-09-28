@@ -38,6 +38,7 @@
     "gulp-jasmine": "^2.1.0",
     "gulp-util": "^3.0.6",
     "gulp-zip": "^3.0.2",
-    "jasmine": "^2.3.2"
+    "jasmine": "^2.3.2",
+    "run-sequence": "^1.1.4"
   }
 }
