@@ -114,6 +114,12 @@ module.exports = class Lamjet
           console.log(result.stack) if result?.stack?
           # callback(result)
 
+    gulp.task "deploy", (callback)->
+      return runSequence(
+        ["build-zip"],
+        ["deploy-to-aws-lambda"],
+        callback)
+
     # TODO: 「lambduh-gulp」に依存しないように修正する。
     lambduhGulp(gulp)
 
