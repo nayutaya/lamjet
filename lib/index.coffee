@@ -1,4 +1,6 @@
 
+path = require("path")
+
 coffee      = require "gulp-coffee"
 gutil       = require "gulp-util"
 jasmine     = require "gulp-jasmine"
@@ -8,6 +10,9 @@ del = require("del")
 install = require("gulp-install")
 zip = require("gulp-zip")
 runSequence = require("run-sequence")
+
+FsWrapper     = require("./fs_wrapper")
+LambdaWrapper = require("./lambda_wrapper")
 
 module.exports = class Lamjet
   @setup: (gulp)->
@@ -42,6 +47,68 @@ module.exports = class Lamjet
         ["install-dependencies"],
         ["archive-to-zip"],
         callback)
+
+    gulp.task "deploy-to-aws-lambda", (callback)->
+      config = require(path.join(process.cwd(), "lambda-config.js"))
+      # config = require("./lambda-config.js")
+      console.log config
+
+      # lambda = new aws.Lambda(
+      #   apiVersion: "2015-03-31",
+      #   region: config.Region)
+      # console.log lambda
+      lambda = new LambdaWrapper(region: config.Region)
+
+      FsWrapper.readFile("./out.zip")
+        .then (result)->
+          zipBody = result.body
+          param = {
+            FunctionName: config.FunctionName,
+            Description: config.Description,
+            Handler: config.Handler,
+            Role: config.Role,
+            Runtime: config.Runtime,
+            MemorySize: config.MemorySize,
+            Timeout: config.Timeout,
+            Code: {ZipFile: zipBody},
+          }
+          console.log param
+          return lambda.createFunction(param)
+            .then (result)->
+              console.log "created"
+              return Promise.resolve(result)
+            .catch (result)->
+              if result.error.statusCode == 409 # Function already exist
+                console.log result.error.statusCode
+                param = {
+                  FunctionName: config.FunctionName,
+                  Description: config.Description,
+                  Handler: config.Handler,
+                  Role: config.Role,
+                  MemorySize: config.MemorySize,
+                  Timeout: config.Timeout,
+                }
+                console.log param
+                return lambda.updateFunctionConfiguration(param)
+                  .then (result)->
+                    param = {
+                      FunctionName: config.FunctionName,
+                      ZipFile: zipBody,
+                    }
+                    console.log param
+                    return lambda.updateFunctionCode(param)
+              else
+                return Promise.reject(result)
+        .then (result)->
+          # console.log(JSON.stringify({then: result}, null, 2))
+          console.log({then: result})
+          # callback()
+        .catch (result)->
+          # console.log(JSON.stringify({catch: result}, null, 2))
+          console.log({catch: result})
+          console.log(result.stack) if result?.stack?
+          # callback(result)
+
 
     # TODO: 「lambduh-gulp」に依存しないように修正する。
     lambduhGulp(gulp)
