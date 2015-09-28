@@ -1,6 +1,8 @@
 
 path = require("path")
 
+Promise = require("promise")
+
 coffee      = require "gulp-coffee"
 gutil       = require "gulp-util"
 jasmine     = require "gulp-jasmine"
@@ -50,53 +52,48 @@ module.exports = class Lamjet
 
     gulp.task "deploy-to-aws-lambda", (callback)->
       config = require(path.join(process.cwd(), "lambda-config.js"))
-      # config = require("./lambda-config.js")
-      console.log config
-
-      # lambda = new aws.Lambda(
-      #   apiVersion: "2015-03-31",
-      #   region: config.Region)
-      # console.log lambda
+      console.log(JSON.stringify({config: config}, null, 2))
       lambda = new LambdaWrapper(region: config.Region)
 
       FsWrapper.readFile("./out.zip")
         .then (result)->
           zipBody = result.body
-          param = {
+          createFunctionParam = {
             FunctionName: config.FunctionName,
-            Description: config.Description,
-            Handler: config.Handler,
-            Role: config.Role,
-            Runtime: config.Runtime,
-            MemorySize: config.MemorySize,
-            Timeout: config.Timeout,
-            Code: {ZipFile: zipBody},
+            Description:  config.Description,
+            Handler:      config.Handler,
+            Role:         config.Role,
+            Runtime:      config.Runtime,
+            MemorySize:   config.MemorySize,
+            Timeout:      config.Timeout,
+            Code:         {ZipFile: zipBody},
           }
-          console.log param
-          return lambda.createFunction(param)
+          console.log(JSON.stringify({createFunctionParam: createFunctionParam}, null, 2))
+          updateFunctionConfigurationParam = {
+            FunctionName: config.FunctionName,
+            Description:  config.Description,
+            Handler:      config.Handler,
+            Role:         config.Role,
+            MemorySize:   config.MemorySize,
+            Timeout:      config.Timeout,
+          }
+          console.log(JSON.stringify({updateFunctionConfigurationParam: updateFunctionConfigurationParam}, null, 2))
+          updateFunctionCodeParam = {
+            FunctionName: config.FunctionName,
+            ZipFile:      zipBody,
+          }
+          console.log(JSON.stringify({updateFunctionCodeParam: updateFunctionCodeParam}, null, 2))
+
+          return lambda.createFunction(createFunctionParam)
             .then (result)->
               console.log "created"
               return Promise.resolve(result)
             .catch (result)->
-              if result.error.statusCode == 409 # Function already exist
+              if result?.error?.statusCode == 409 # Function already exist
                 console.log result.error.statusCode
-                param = {
-                  FunctionName: config.FunctionName,
-                  Description: config.Description,
-                  Handler: config.Handler,
-                  Role: config.Role,
-                  MemorySize: config.MemorySize,
-                  Timeout: config.Timeout,
-                }
-                console.log param
-                return lambda.updateFunctionConfiguration(param)
+                return lambda.updateFunctionConfiguration(updateFunctionConfigurationParam)
                   .then (result)->
-                    param = {
-                      FunctionName: config.FunctionName,
-                      ZipFile: zipBody,
-                    }
-                    console.log param
-                    return lambda.updateFunctionCode(param)
+                    return lambda.updateFunctionCode(updateFunctionCodeParam)
               else
                 return Promise.reject(result)
         .then (result)->
