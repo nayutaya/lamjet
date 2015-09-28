@@ -12,7 +12,7 @@ stdin  = process.stdin
 stdin.setEncoding("utf8")
 
 question = (stdout, stdin, message, defaultValue)->
-  stdout.write "#{message} [#{defaultValue}] "
+  stdout.write "#{message} [#{defaultValue}] ? "
   buffer  = ""
   pattern = /^(.*?)\n/
 
@@ -37,11 +37,25 @@ question = (stdout, stdin, message, defaultValue)->
     stdin.on "readable", onReadable
     stdin.on "end", onEnd
 
+config = {
+  functionName: "defFunName",
+  region: "us-east-1",
+  role: "arn:aws:iam::ACCOUNTID:role/ROLENAME",
+  memorySize: 128,
+  timeout: 3,
+}
+
 Promise.resolve()
-  .then (result)-> question(stdout, stdin, "hoge?", "yes")
+  .then (result)-> question(stdout, stdin, "Function name", config.functionName)
+  .then (result)-> config.functionName = result
+  .then (result)-> question(stdout, stdin, "Region", config.region)
+  .then (result)-> config.region = result
+  .then (result)-> question(stdout, stdin, "Role", config.role)
+  .then (result)-> config.role = result
+  .then (result)-> question(stdout, stdin, "Memory size in MB", String(config.memorySize))
+  .then (result)-> config.memorySize = Number(result)
+  .then (result)-> question(stdout, stdin, "Timeout in sec", String(config.timeout))
+  .then (result)-> config.timeout = Number(result)
+  .then (result)-> stdin.pause()
   .then (result)->
-    console.log(JSON.stringify({then: result}, null, 2))
-  .then (result)->
-    question(stdout, stdin, "foo?", "z")
-  .then (result)->
-    console.log(JSON.stringify({then: result}, null, 2))
+    console.log(JSON.stringify({config: config}, null, 2))
