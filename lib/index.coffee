@@ -6,7 +6,6 @@ Promise = require("promise")
 coffee      = require "gulp-coffee"
 gutil       = require "gulp-util"
 jasmine     = require "gulp-jasmine"
-lambduhGulp = require "lambduh-gulp"
 
 del = require("del")
 install = require("gulp-install")
@@ -119,9 +118,6 @@ module.exports = class Lamjet
         ["build-zip"],
         ["deploy-to-aws-lambda"],
         callback)
-
-    # TODO: 「lambduh-gulp」に依存しないように修正する。
-    lambduhGulp(gulp)
 
     # TODO: 削除予定。
     gulp.task "js", ->
