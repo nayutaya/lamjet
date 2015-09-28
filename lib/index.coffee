@@ -12,6 +12,12 @@ module.exports = class Lamjet
     gulp.task "myclean", (callback)->
       del(["./out", "./out.zip"], callback)
 
+    # TODO: 「build」に名称変更する。
+    gulp.task "mybuild", ->
+      gulp.src("./src/**/*.coffee")
+        .pipe(coffee()).on("error", gutil.log)
+        .pipe(gulp.dest("./out"))
+
     # TODO: 「lambduh-gulp」に依存しないように修正する。
     lambduhGulp(gulp)
 
