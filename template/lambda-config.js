@@ -1,11 +1,11 @@
 
 module.exports = {
-  FunctionName: "FUNCTION-NAME",
+  FunctionName: "{FUNCTION-NAME}",
   Description: "TODO",
   Handler: "index.handler",
-  Role: "arn:aws:iam::ACCOUNTID:role/ROLENAME",
-  Region: "REGION",
+  Role: "{ROLE}",
+  Region: "{REGION}",
   Runtime: "nodejs",
-  MemorySize: 128,
-  Timeout: 3
+  MemorySize: {MEMORY-SIZE},
+  Timeout: {TIMEOUT}
 }
