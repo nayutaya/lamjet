@@ -52,9 +52,10 @@ module.exports = class Lamjet
 
     gulp.task "deploy-to-aws-lambda", (callback)->
       config = require(path.join(process.cwd(), "lambda-config.js"))
-      console.log(JSON.stringify({config: config}, null, 2))
+      # console.log(JSON.stringify({config: config}, null, 2))
       lambda = new LambdaWrapper(region: config.Region)
 
+      console.log "Loading zip file..."
       FsWrapper.readFile("./out.zip")
         .then (result)->
           zipBody = result.body
@@ -68,7 +69,7 @@ module.exports = class Lamjet
             Timeout:      config.Timeout,
             Code:         {ZipFile: zipBody},
           }
-          console.log(JSON.stringify({createFunctionParam: createFunctionParam}, null, 2))
+          # console.log(JSON.stringify({createFunctionParam: createFunctionParam}, null, 2))
           updateFunctionConfigurationParam = {
             FunctionName: config.FunctionName,
             Description:  config.Description,
@@ -77,35 +78,41 @@ module.exports = class Lamjet
             MemorySize:   config.MemorySize,
             Timeout:      config.Timeout,
           }
-          console.log(JSON.stringify({updateFunctionConfigurationParam: updateFunctionConfigurationParam}, null, 2))
+          # console.log(JSON.stringify({updateFunctionConfigurationParam: updateFunctionConfigurationParam}, null, 2))
           updateFunctionCodeParam = {
             FunctionName: config.FunctionName,
             ZipFile:      zipBody,
           }
-          console.log(JSON.stringify({updateFunctionCodeParam: updateFunctionCodeParam}, null, 2))
+          # console.log(JSON.stringify({updateFunctionCodeParam: updateFunctionCodeParam}, null, 2))
 
+          console.log "Creating function..."
           return lambda.createFunction(createFunctionParam)
             .then (result)->
-              console.log "created"
+              console.log "Created function."
               return Promise.resolve(result)
             .catch (result)->
-              if result?.error?.statusCode == 409 # Function already exist
-                console.log result.error.statusCode
+              if result?.error?.statusCode == 409 #
+                console.log "Function already exist"
+                console.log "Updating function configuration..."
                 return lambda.updateFunctionConfiguration(updateFunctionConfigurationParam)
                   .then (result)->
+                    console.log "Update function code..."
                     return lambda.updateFunctionCode(updateFunctionCodeParam)
+                  .then (result)->
+                    console.log "Updated function."
+                    return Promise.resolve(result)
               else
                 return Promise.reject(result)
         .then (result)->
           # console.log(JSON.stringify({then: result}, null, 2))
-          console.log({then: result})
+          console.log("Successful deploy function.")
           # callback()
         .catch (result)->
           # console.log(JSON.stringify({catch: result}, null, 2))
-          console.log({catch: result})
+          console.log("Failed deploy function.")
+          console.log(result)
           console.log(result.stack) if result?.stack?
           # callback(result)
-
 
     # TODO: 「lambduh-gulp」に依存しないように修正する。
     lambduhGulp(gulp)
