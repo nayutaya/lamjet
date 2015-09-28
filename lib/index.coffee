@@ -5,6 +5,7 @@ jasmine     = require "gulp-jasmine"
 lambduhGulp = require "lambduh-gulp"
 
 del = require("del")
+install = require("gulp-install")
 
 module.exports = class Lamjet
   @setup: (gulp)->
@@ -21,6 +22,10 @@ module.exports = class Lamjet
     gulp.task "copy-package-json", ->
       gulp.src("./package.json").
         pipe(gulp.dest("./out"))
+
+    gulp.task "install-dependencies", ->
+      gulp.src("./out/package.json")
+        .pipe(install({production: true}))
 
     # TODO: 「lambduh-gulp」に依存しないように修正する。
     lambduhGulp(gulp)
