@@ -46,18 +46,22 @@ module.exports = class Lamjet
     # TODO: 「lambduh-gulp」に依存しないように修正する。
     lambduhGulp(gulp)
 
+    # TODO: 削除予定。
     gulp.task "js", ->
       gulp.src("./src/*.coffee")
         .pipe(coffee()).on("error", gutil.log)
         .pipe(gulp.dest("./dist"))
 
+    # TODO: サブディレクトリも含める。ディレクトリ名を変更する。
     gulp.task "test", ->
       gulp.src("./dist/*_spec.js")
         .pipe(jasmine({includeStackTrace: false}))
 
+    # TODO: サブディレクトリも含める。ディレクトリ名を変更する。
     gulp.task "auto-test", ->
       gulp.watch("./src/*.coffee", ["default"])
       gulp.start("default")
 
+    # TODO: 依存タスク名を変更する。
     gulp.task "default", ["js"], ->
       gulp.start("test")
