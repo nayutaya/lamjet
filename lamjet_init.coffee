@@ -12,25 +12,36 @@ stdin  = process.stdin
 stdin.setEncoding("utf8")
 
 question = (stdout, stdin, message, defaultValue)->
-  # TODO: 改行しない方法を調べる
   stdout.write "#{message} [#{defaultValue}] "
-  buffer = ""
+  buffer  = ""
   pattern = /^(.*?)\n/
+
   return new Promise (resolve, reject)->
-    stdin.on "readable", ->
+    onReadable = ->
       while chunk = stdin.read()
         buffer += chunk
-      # console.log(JSON.stringify({buffer: buffer}, null, 2))
       match = pattern.exec(buffer)
       if match?
+        stdin.removeListener "readable", onReadable
+        stdin.removeListener "end", onEnd
         if match[1] == ""
           resolve(defaultValue)
         else
           resolve(match[1])
-    stdin.on "end", ->
-      resolve(defaultValue)
 
+    onEnd = ->
+      stdin.removeListener "readable", onReadable
+      stdin.removeListener "end", onEnd
+      reject()
 
-question(stdout, stdin, "hoge?", "yes")
+    stdin.on "readable", onReadable
+    stdin.on "end", onEnd
+
+Promise.resolve()
+  .then (result)-> question(stdout, stdin, "hoge?", "yes")
+  .then (result)->
+    console.log(JSON.stringify({then: result}, null, 2))
+  .then (result)->
+    question(stdout, stdin, "foo?", "z")
   .then (result)->
     console.log(JSON.stringify({then: result}, null, 2))
