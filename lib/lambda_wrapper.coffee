@@ -29,7 +29,7 @@ module.exports = class LambdaWrapper
   updateFunctionCode: (param)->
     self = this
     return new Promise (resolve, reject)->
-      self.lambda.createFunction param, (error, data)->
+      self.lambda.updateFunctionCode param, (error, data)->
         if error?
           reject(param: param, error: error)
         else
