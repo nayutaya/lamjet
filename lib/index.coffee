@@ -17,12 +17,10 @@ LambdaWrapper = require("./lambda_wrapper")
 
 module.exports = class Lamjet
   @setup: (gulp)->
-    # TODO: 「clean」に名称変更する。
-    gulp.task "myclean", (callback)->
+    gulp.task "clean", (callback)->
       del(["./out", "./out.zip"], callback)
 
-    # TODO: 「build」に名称変更する。
-    gulp.task "mybuild", ->
+    gulp.task "compile", ->
       gulp.src("./src/**/*.coffee")
         .pipe(coffee()).on("error", gutil.log)
         .pipe(gulp.dest("./out"))
@@ -42,8 +40,8 @@ module.exports = class Lamjet
 
     gulp.task "build-zip", (callback)->
       return runSequence(
-        ["myclean"],
-        ["mybuild"],
+        ["clean"],
+        ["compile"],
         ["copy-package-json"],
         ["install-dependencies"],
         ["archive-to-zip"],
