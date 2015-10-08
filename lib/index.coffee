@@ -108,16 +108,13 @@ module.exports = class Lamjet
         ["deploy-to-aws-lambda"],
         callback)
 
-    # TODO: サブディレクトリも含める。ディレクトリ名を変更する。
     gulp.task "test", ->
-      gulp.src("./dist/*_spec.js")
+      gulp.src("./out/**/*_spec.js")
         .pipe(jasmine({includeStackTrace: false}))
 
-    # TODO: サブディレクトリも含める。ディレクトリ名を変更する。
     gulp.task "auto-test", ->
-      gulp.watch("./src/*.coffee", ["default"])
+      gulp.watch("./src/**/*.coffee", ["default"])
       gulp.start("default")
 
-    # TODO: 依存タスク名を変更する。
-    gulp.task "default", ["js"], ->
+    gulp.task "default", ["compile"], ->
       gulp.start("test")
