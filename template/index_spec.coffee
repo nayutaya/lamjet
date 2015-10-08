@@ -1,6 +1,4 @@
 
-# index_spec.coffee
-
 index = require "./index"
 
 describe "index", ->
