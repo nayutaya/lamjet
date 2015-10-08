@@ -60,11 +60,10 @@ module.exports = class LamjetCommand
     self = this
     return self.readTemplate("aws-lambda-config.js")
       .then (result)->
-        result.body = result.body.replace(/\{FUNCTION-NAME\}/, (options?.functionName ? throw new Error("functionName")))
-        result.body = result.body.replace(/\{REGION\}/,        (options?.region       ? throw new Error("region")))
-        result.body = result.body.replace(/\{ROLE\}/,          (options?.role         ? throw new Error("role")))
-        result.body = result.body.replace(/\{MEMORY-SIZE\}/,   (options?.memorySize   ? throw new Error("memorySize")))
-        result.body = result.body.replace(/\{TIMEOUT\}/,       (options?.timeout      ? throw new Error("timeout")))
+        result.body = result.body.replace(/\{REGION\}/,      (options?.region     ? throw new Error("region")))
+        result.body = result.body.replace(/\{ROLE\}/,        (options?.role       ? throw new Error("role")))
+        result.body = result.body.replace(/\{MEMORY-SIZE\}/, (options?.memorySize ? throw new Error("memorySize")))
+        result.body = result.body.replace(/\{TIMEOUT\}/,     (options?.timeout    ? throw new Error("timeout")))
         return Promise.resolve(result)
       .then (result)-> self.writeArtifact("aws-lambda-config.js", result.body)
 
