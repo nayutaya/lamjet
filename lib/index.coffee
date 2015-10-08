@@ -1,16 +1,14 @@
 
 path = require("path")
 
-Promise = require("promise")
-
-coffee      = require "gulp-coffee"
-gutil       = require "gulp-util"
-jasmine     = require "gulp-jasmine"
-
-del = require("del")
-install = require("gulp-install")
-zip = require("gulp-zip")
+Promise     = require("promise")
+coffee      = require("gulp-coffee")
+gutil       = require("gulp-util")
+jasmine     = require("gulp-jasmine")
+install     = require("gulp-install")
+zip         = require("gulp-zip")
 runSequence = require("run-sequence")
+del         = require("del")
 
 FsWrapper     = require("./fs_wrapper")
 LambdaWrapper = require("./lambda_wrapper")
