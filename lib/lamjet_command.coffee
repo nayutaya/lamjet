@@ -54,6 +54,7 @@ module.exports = class LamjetCommand
       .then (result)->
         result.body = result.body.replace(/\{FUNCTION-NAME\}/, (options?.functionName ? throw new Error("functionName")))
         result.body = result.body.replace(/\{VERSION\}/,       (options?.version      ? throw new Error("version")))
+        result.body = result.body.replace(/\{DESCRIPTION\}/,   (options?.description  ? throw new Error("description")))
         return Promise.resolve(result)
       .then (result)-> self.writeArtifact("package.json", result.body)
 
@@ -107,6 +108,8 @@ module.exports = class LamjetCommand
       .then (result)-> config.functionName = result
       .then (result)-> self.question(stdout, stdin, "Version", defaultConfig.version)
       .then (result)-> config.version = result
+      .then (result)-> self.question(stdout, stdin, "Description", defaultConfig.description)
+      .then (result)-> config.description = result
       .then (result)-> self.question(stdout, stdin, "Region", defaultConfig.region)
       .then (result)-> config.region = result
       .then (result)-> self.question(stdout, stdin, "Role", defaultConfig.role)
@@ -129,6 +132,7 @@ module.exports = class LamjetCommand
     defaultConfig = {
       functionName: path.basename(path.resolve()),
       version: "1.0.0",
+      description: "TODO",
       region: "us-east-1",
       role: "arn:aws:iam::ACCOUNTID:role/ROLENAME",
       memorySize: 128,

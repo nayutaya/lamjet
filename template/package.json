@@ -2,7 +2,7 @@
   "private": true,
   "name": "{FUNCTION-NAME}",
   "version": "{VERSION}",
-  "description": "TODO:",
+  "description": "{DESCRIPTION}",
   "scripts": {
     "test": "gulp",
     "build-zip": "gulp build-zip",
