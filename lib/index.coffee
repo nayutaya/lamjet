@@ -46,33 +46,33 @@ module.exports = class Lamjet
         callback)
 
     gulp.task "deploy-to-aws-lambda", (callback)->
-      config = require(path.join(process.cwd(), "lambda-config.js"))
-      lambda = new LambdaWrapper(region: config.Region)
+      config = require(path.join(process.cwd(), "aws-lambda-config.js"))
+      lambda = new LambdaWrapper(region: config.region)
 
       console.log "Loading zip file..."
       FsWrapper.readFile("./out.zip")
         .then (result)->
           zipBody = result.body
           createFunctionParam = {
-            FunctionName: config.FunctionName,
-            Description:  config.Description,
-            Handler:      config.Handler,
-            Role:         config.Role,
-            Runtime:      config.Runtime,
-            MemorySize:   config.MemorySize,
-            Timeout:      config.Timeout,
+            FunctionName: config.functionName,
+            Description:  config.description,
+            Handler:      config.handler,
+            Role:         config.role,
+            Runtime:      config.runtime,
+            MemorySize:   config.memorySize,
+            Timeout:      config.timeout,
             Code:         {ZipFile: zipBody},
           }
           updateFunctionConfigurationParam = {
-            FunctionName: config.FunctionName,
-            Description:  config.Description,
-            Handler:      config.Handler,
-            Role:         config.Role,
-            MemorySize:   config.MemorySize,
-            Timeout:      config.Timeout,
+            FunctionName: config.functionName,
+            Description:  config.description,
+            Handler:      config.handler,
+            Role:         config.role,
+            MemorySize:   config.memorySize,
+            Timeout:      config.timeout,
           }
           updateFunctionCodeParam = {
-            FunctionName: config.FunctionName,
+            FunctionName: config.functionName,
             ZipFile:      zipBody,
           }
           console.log "Creating function..."

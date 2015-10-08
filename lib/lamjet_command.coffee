@@ -56,9 +56,9 @@ module.exports = class LamjetCommand
         return Promise.resolve(result)
       .then (result)-> self.writeArtifact("package.json", result.body)
 
-  makeLambdaConfigJs: (options)->
+  makeAwsLambdaConfigJs: (options)->
     self = this
-    return self.readTemplate("lambda-config.js")
+    return self.readTemplate("aws-lambda-config.js")
       .then (result)->
         result.body = result.body.replace(/\{FUNCTION-NAME\}/, (options?.functionName ? throw new Error("functionName")))
         result.body = result.body.replace(/\{REGION\}/,        (options?.region       ? throw new Error("region")))
@@ -66,7 +66,7 @@ module.exports = class LamjetCommand
         result.body = result.body.replace(/\{MEMORY-SIZE\}/,   (options?.memorySize   ? throw new Error("memorySize")))
         result.body = result.body.replace(/\{TIMEOUT\}/,       (options?.timeout      ? throw new Error("timeout")))
         return Promise.resolve(result)
-      .then (result)-> self.writeArtifact("lambda-config.js", result.body)
+      .then (result)-> self.writeArtifact("aws-lambda-config.js", result.body)
 
   copyTemplate: (source, destination)->
     self = this
@@ -138,7 +138,7 @@ module.exports = class LamjetCommand
         # console.log(JSON.stringify({config: result}, null, 2))
         config = result
       .then (result)-> self.makePackageJson(config)
-      .then (result)-> self.makeLambdaConfigJs(config)
+      .then (result)-> self.makeAwsLambdaConfigJs(config)
       .then (result)-> self.copyTemplate("gitignore", ".gitignore")
       .then (result)-> self.copyTemplate("gulpfile.coffee")
       .then (result)-> self.copyTemplate("index.coffee", path.join("src", "index.coffee"))
