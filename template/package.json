@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "{FUNCTION-NAME}",
-  "version": "1.0.0",
+  "version": "{VERSION}",
   "description": "TODO:",
   "scripts": {
     "test": "gulp",
