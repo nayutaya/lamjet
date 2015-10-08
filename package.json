@@ -1,6 +1,6 @@
 {
   "name": "lamjet",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "AWS Lambda + Jasmine + CoffeeScript = Lamjet!",
   "bin": "./bin/lamjet.js",
   "main": "./lib/index.js",
