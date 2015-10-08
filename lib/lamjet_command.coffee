@@ -53,20 +53,21 @@ module.exports = class LamjetCommand
     return self.readTemplate("package.json")
       .then (result)->
         result.body = result.body.replace(/\{FUNCTION-NAME\}/, (options?.functionName ? throw new Error("functionName")))
+        result.body = result.body.replace(/\{VERSION\}/,       (options?.version      ? throw new Error("version")))
+        result.body = result.body.replace(/\{DESCRIPTION\}/,   (options?.description  ? throw new Error("description")))
         return Promise.resolve(result)
       .then (result)-> self.writeArtifact("package.json", result.body)
 
-  makeLambdaConfigJs: (options)->
+  makeAwsLambdaConfigJs: (options)->
     self = this
-    return self.readTemplate("lambda-config.js")
+    return self.readTemplate("aws-lambda-config.js")
       .then (result)->
-        result.body = result.body.replace(/\{FUNCTION-NAME\}/, (options?.functionName ? throw new Error("functionName")))
-        result.body = result.body.replace(/\{REGION\}/,        (options?.region       ? throw new Error("region")))
-        result.body = result.body.replace(/\{ROLE\}/,          (options?.role         ? throw new Error("role")))
-        result.body = result.body.replace(/\{MEMORY-SIZE\}/,   (options?.memorySize   ? throw new Error("memorySize")))
-        result.body = result.body.replace(/\{TIMEOUT\}/,       (options?.timeout      ? throw new Error("timeout")))
+        result.body = result.body.replace(/\{REGION\}/,      (options?.region     ? throw new Error("region")))
+        result.body = result.body.replace(/\{ROLE\}/,        (options?.role       ? throw new Error("role")))
+        result.body = result.body.replace(/\{MEMORY-SIZE\}/, (options?.memorySize ? throw new Error("memorySize")))
+        result.body = result.body.replace(/\{TIMEOUT\}/,     (options?.timeout    ? throw new Error("timeout")))
         return Promise.resolve(result)
-      .then (result)-> self.writeArtifact("lambda-config.js", result.body)
+      .then (result)-> self.writeArtifact("aws-lambda-config.js", result.body)
 
   copyTemplate: (source, destination)->
     self = this
@@ -105,6 +106,10 @@ module.exports = class LamjetCommand
     return Promise.resolve()
       .then (result)-> self.question(stdout, stdin, "Function name", defaultConfig.functionName)
       .then (result)-> config.functionName = result
+      .then (result)-> self.question(stdout, stdin, "Version", defaultConfig.version)
+      .then (result)-> config.version = result
+      .then (result)-> self.question(stdout, stdin, "Description", defaultConfig.description)
+      .then (result)-> config.description = result
       .then (result)-> self.question(stdout, stdin, "Region", defaultConfig.region)
       .then (result)-> config.region = result
       .then (result)-> self.question(stdout, stdin, "Role", defaultConfig.role)
@@ -126,6 +131,8 @@ module.exports = class LamjetCommand
     self = this
     defaultConfig = {
       functionName: path.basename(path.resolve()),
+      version: "1.0.0",
+      description: "TODO",
       region: "us-east-1",
       role: "arn:aws:iam::ACCOUNTID:role/ROLENAME",
       memorySize: 128,
@@ -134,11 +141,9 @@ module.exports = class LamjetCommand
     config = null
     return Promise.resolve()
       .then (result)-> self.configuration(self.stdout, self.stdin, defaultConfig)
-      .then (result)->
-        # console.log(JSON.stringify({config: result}, null, 2))
-        config = result
+      .then (result)-> config = result
       .then (result)-> self.makePackageJson(config)
-      .then (result)-> self.makeLambdaConfigJs(config)
+      .then (result)-> self.makeAwsLambdaConfigJs(config)
       .then (result)-> self.copyTemplate("gitignore", ".gitignore")
       .then (result)-> self.copyTemplate("gulpfile.coffee")
       .then (result)-> self.copyTemplate("index.coffee", path.join("src", "index.coffee"))
@@ -150,7 +155,6 @@ module.exports = class LamjetCommand
     if self.argv[2] == "init"
       self.init()
         .then (result)->
-          # self.print(JSON.stringify({then: result}, null, 2))
           self.print("initialized")
         .catch (result)->
           self.print(result)

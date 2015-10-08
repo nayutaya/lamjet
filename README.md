@@ -27,7 +27,7 @@ $ mkdir your-function-name
 $ cd your-function-name
 $ lamjet init
 $ npm install
-$ npm test  # or: gulp
+$ gulp  # or: npm test
 ```
 
 ### 2. Edit configuration
@@ -43,7 +43,7 @@ $ vim lambda-config.js
 $ export AWS_ACCESS_KEY_ID=...
 $ export AWS_SECRET_ACCESS_KEY=...
 
-$ npm run-script deploy
+$ gulp deploy  # or: npm run-script deploy
 ```
 
 ## License
