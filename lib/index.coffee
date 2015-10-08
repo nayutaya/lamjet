@@ -108,12 +108,6 @@ module.exports = class Lamjet
         ["deploy-to-aws-lambda"],
         callback)
 
-    # TODO: 削除予定。
-    gulp.task "js", ->
-      gulp.src("./src/*.coffee")
-        .pipe(coffee()).on("error", gutil.log)
-        .pipe(gulp.dest("./dist"))
-
     # TODO: サブディレクトリも含める。ディレクトリ名を変更する。
     gulp.task "test", ->
       gulp.src("./dist/*_spec.js")
