@@ -141,9 +141,7 @@ module.exports = class LamjetCommand
     config = null
     return Promise.resolve()
       .then (result)-> self.configuration(self.stdout, self.stdin, defaultConfig)
-      .then (result)->
-        # console.log(JSON.stringify({config: result}, null, 2))
-        config = result
+      .then (result)-> config = result
       .then (result)-> self.makePackageJson(config)
       .then (result)-> self.makeAwsLambdaConfigJs(config)
       .then (result)-> self.copyTemplate("gitignore", ".gitignore")
@@ -157,7 +155,6 @@ module.exports = class LamjetCommand
     if self.argv[2] == "init"
       self.init()
         .then (result)->
-          # self.print(JSON.stringify({then: result}, null, 2))
           self.print("initialized")
         .catch (result)->
           self.print(result)
