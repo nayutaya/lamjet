@@ -1,9 +1,9 @@
 
-package = require("./package.json")
+var packageJson = require("./package.json")
 
 module.exports = {
-  functionName: package.name,
-  description: "v" + package.version + ": " + package.description,
+  functionName: packageJson.name,
+  description: "v" + packageJson.version + ": " + packageJson.description,
   region: "{REGION}",
   role: "{ROLE}",
   memorySize: {MEMORY-SIZE},
