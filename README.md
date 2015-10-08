@@ -33,7 +33,7 @@ $ gulp  # or: npm test
 ### 2. Edit configuration
 
 ```
-$ vim lambda-config.js
+$ vim aws-lambda-config.js
 ```
 
 ### 3. Deploy function to AWS Lambda
