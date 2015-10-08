@@ -47,7 +47,6 @@ module.exports = class Lamjet
 
     gulp.task "deploy-to-aws-lambda", (callback)->
       config = require(path.join(process.cwd(), "lambda-config.js"))
-      # console.log(JSON.stringify({config: config}, null, 2))
       lambda = new LambdaWrapper(region: config.Region)
 
       console.log "Loading zip file..."
@@ -64,7 +63,6 @@ module.exports = class Lamjet
             Timeout:      config.Timeout,
             Code:         {ZipFile: zipBody},
           }
-          # console.log(JSON.stringify({createFunctionParam: createFunctionParam}, null, 2))
           updateFunctionConfigurationParam = {
             FunctionName: config.FunctionName,
             Description:  config.Description,
@@ -73,20 +71,17 @@ module.exports = class Lamjet
             MemorySize:   config.MemorySize,
             Timeout:      config.Timeout,
           }
-          # console.log(JSON.stringify({updateFunctionConfigurationParam: updateFunctionConfigurationParam}, null, 2))
           updateFunctionCodeParam = {
             FunctionName: config.FunctionName,
             ZipFile:      zipBody,
           }
-          # console.log(JSON.stringify({updateFunctionCodeParam: updateFunctionCodeParam}, null, 2))
-
           console.log "Creating function..."
           return lambda.createFunction(createFunctionParam)
             .then (result)->
               console.log "Created function."
               return Promise.resolve(result)
             .catch (result)->
-              if result?.error?.statusCode == 409 #
+              if result?.error?.statusCode == 409
                 console.log "Function already exist"
                 console.log "Updating function configuration..."
                 return lambda.updateFunctionConfiguration(updateFunctionConfigurationParam)
@@ -99,11 +94,9 @@ module.exports = class Lamjet
               else
                 return Promise.reject(result)
         .then (result)->
-          # console.log(JSON.stringify({then: result}, null, 2))
           console.log("Successful deploy function.")
           # callback()
         .catch (result)->
-          # console.log(JSON.stringify({catch: result}, null, 2))
           console.log("Failed deploy function.")
           console.log(result)
           console.log(result.stack) if result?.stack?
