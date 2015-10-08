@@ -56,20 +56,20 @@ module.exports = class Lamjet
           createFunctionParam = {
             FunctionName: config.functionName,
             Description:  config.description,
-            Handler:      config.handler,
             Role:         config.role,
-            Runtime:      config.runtime,
             MemorySize:   config.memorySize,
             Timeout:      config.timeout,
+            Runtime:      config.runtime,
+            Handler:      config.handler,
             Code:         {ZipFile: zipBody},
           }
           updateFunctionConfigurationParam = {
             FunctionName: config.functionName,
             Description:  config.description,
-            Handler:      config.handler,
             Role:         config.role,
             MemorySize:   config.memorySize,
             Timeout:      config.timeout,
+            Handler:      config.handler,
           }
           updateFunctionCodeParam = {
             FunctionName: config.functionName,
