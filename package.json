@@ -1,29 +1,12 @@
 {
   "name": "lamjet",
-  "version": "0.3.1",
   "description": "AWS Lambda + Jasmine + CoffeeScript = Lamjet!",
-  "bin": "./bin/lamjet.js",
-  "main": "./lib/index.js",
-  "scripts": {
-    "test": "gulp"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/nayutaya/lamjet.git"
-  },
-  "keywords": [
-    "AWS",
-    "Lambda",
-    "Jasmine",
-    "Coffee",
-    "CoffeeScript"
-  ],
+  "version": "0.3.1",
   "author": "Yuya Kato (Nayutaya Inc.)",
-  "license": "MIT",
+  "bin": "./bin/lamjet.js",
   "bugs": {
     "url": "https://github.com/nayutaya/lamjet/issues"
   },
-  "homepage": "https://github.com/nayutaya/lamjet",
   "dependencies": {
     "mkdirp": "^0.5.1",
     "promise": "^7.0.4"
@@ -40,5 +23,22 @@
     "gulp-zip": "^3.0.2",
     "jasmine": "^2.3.2",
     "run-sequence": "^1.1.4"
+  },
+  "homepage": "https://github.com/nayutaya/lamjet",
+  "keywords": [
+    "AWS",
+    "Coffee",
+    "CoffeeScript",
+    "Jasmine",
+    "Lambda"
+  ],
+  "license": "MIT",
+  "main": "./lib/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nayutaya/lamjet.git"
+  },
+  "scripts": {
+    "test": "gulp"
   }
 }
