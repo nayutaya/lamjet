@@ -1,5 +1,5 @@
 
-index = require "./index"
+index = require("./index")
 
 describe "index", ->
   originalTimeout = null
@@ -18,8 +18,8 @@ describe "index", ->
       context = {
         succeed: ->
           done()
-        fail: ->
-          fail()
+        fail: (error)->
+          fail(error)
           done()
       }
       index.handler(event, context)

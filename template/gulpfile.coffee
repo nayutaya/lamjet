@@ -1,5 +1,5 @@
 
-gulp   = require "gulp"
-lamjet = require "lamjet"
+gulp   = require("gulp")
+lamjet = require("lamjet")
 
 lamjet.setup(gulp)
