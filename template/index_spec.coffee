@@ -1,5 +1,5 @@
 
-index = require "./index"
+index = require("./index")
 
 describe "index", ->
   originalTimeout = null
