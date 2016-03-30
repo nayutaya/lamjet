@@ -39,8 +39,8 @@ module.exports = class Lamjet
       # nop
 
     gulp.task "copy-package-json", ->
-      gulp.src("./package.json").
-        pipe(gulp.dest("./out"))
+      gulp.src("./package.json")
+        .pipe(gulp.dest("./out"))
 
     gulp.task "after-copy-package-json", ->
       # nop
@@ -89,7 +89,7 @@ module.exports = class Lamjet
       config = require(path.join(process.cwd(), "aws-lambda-config.js"))
       lambda = new LambdaWrapper(region: config.region)
 
-      console.log "Loading zip file..."
+      console.log("Loading zip file...")
       FsWrapper.readFile("./out.zip")
         .then (result)->
           zipBody = result.body
@@ -115,21 +115,21 @@ module.exports = class Lamjet
             FunctionName: config.functionName,
             ZipFile:      zipBody,
           }
-          console.log "Creating function..."
+          console.log("Creating function...")
           return lambda.createFunction(createFunctionParam)
             .then (result)->
-              console.log "Created function."
+              console.log("Created function.")
               return Promise.resolve(result)
             .catch (result)->
               if result?.error?.statusCode == 409
-                console.log "Function already exist"
-                console.log "Updating function configuration..."
+                console.log("Function already exist")
+                console.log("Updating function configuration...")
                 return lambda.updateFunctionConfiguration(updateFunctionConfigurationParam)
                   .then (result)->
-                    console.log "Update function code..."
+                    console.log("Update function code...")
                     return lambda.updateFunctionCode(updateFunctionCodeParam)
                   .then (result)->
-                    console.log "Updated function."
+                    console.log("Updated function.")
                     return Promise.resolve(result)
               else
                 return Promise.reject(result)
