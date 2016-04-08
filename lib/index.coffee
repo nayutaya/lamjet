@@ -109,6 +109,7 @@ module.exports = class Lamjet
             Role:         config.role,
             MemorySize:   config.memorySize,
             Timeout:      config.timeout,
+            Runtime:      config.runtime,
             Handler:      config.handler,
           }
           updateFunctionCodeParam = {
