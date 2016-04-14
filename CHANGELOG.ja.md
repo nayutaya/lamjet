@@ -1,6 +1,10 @@
 
 # ChangeLog
 
+## TODO
+
+* デフォルトのランタイムを「Node.js v0.10」から「Node.js v4.3」に変更
+
 ## v0.4.1
 
 * Lambda関数の更新時の処理を修正
