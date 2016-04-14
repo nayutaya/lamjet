@@ -8,6 +8,6 @@ module.exports = {
   role: "{ROLE}",
   memorySize: {MEMORY-SIZE},
   timeout: {TIMEOUT},
-  runtime: "nodejs",
+  runtime: "nodejs4.3",
   handler: "index.handler"
 }
