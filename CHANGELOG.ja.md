@@ -1,7 +1,7 @@
 
 # ChangeLog
 
-## TODO
+## v0.4.2
 
 * デフォルトのランタイムを「Node.js v0.10」から「Node.js v4.3」に変更
 
