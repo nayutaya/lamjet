@@ -19,7 +19,7 @@ module.exports = class Lamjet
       # nop
 
     gulp.task "clean", (callback)->
-      del(["./out", "./out.zip"], callback)
+      del(["./dist", "./dist.zip"], callback)
 
     gulp.task "after-clean", ->
       # nop
@@ -30,7 +30,7 @@ module.exports = class Lamjet
     gulp.task "compile", ->
       gulp.src("./src/**/*.coffee")
         .pipe(coffee()).on("error", gutil.log)
-        .pipe(gulp.dest("./out"))
+        .pipe(gulp.dest("./dist"))
 
     gulp.task "after-compile", ->
       # nop
@@ -40,7 +40,7 @@ module.exports = class Lamjet
 
     gulp.task "copy-package-json", ->
       gulp.src("./package.json")
-        .pipe(gulp.dest("./out"))
+        .pipe(gulp.dest("./dist"))
 
     gulp.task "after-copy-package-json", ->
       # nop
@@ -49,7 +49,7 @@ module.exports = class Lamjet
       # nop
 
     gulp.task "install-dependencies", ->
-      gulp.src("./out/package.json")
+      gulp.src("./dist/package.json")
         .pipe(install({production: true}))
 
     gulp.task "after-install-dependencies", ->
@@ -59,8 +59,8 @@ module.exports = class Lamjet
       # nop
 
     gulp.task "archive-to-zip", ->
-      gulp.src(["out/**/*"])
-        .pipe(zip("out.zip"))
+      gulp.src(["dist/**/*"])
+        .pipe(zip("dist.zip"))
         .pipe(gulp.dest("./"))
 
     gulp.task "after-archive-to-zip", ->
@@ -90,7 +90,7 @@ module.exports = class Lamjet
       lambda = new LambdaWrapper(region: config.region)
 
       console.log("Loading zip file...")
-      FsWrapper.readFile("./out.zip")
+      FsWrapper.readFile("./dist.zip")
         .then (result)->
           zipBody = result.body
           createFunctionParam = {
@@ -150,7 +150,7 @@ module.exports = class Lamjet
         callback)
 
     gulp.task "test", ->
-      gulp.src("./out/**/*_spec.js")
+      gulp.src("./dist/**/*_spec.js")
         .pipe(jasmine({includeStackTrace: false}))
 
     gulp.task "auto-test", ->
