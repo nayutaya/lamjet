@@ -150,7 +150,7 @@ module.exports = class Lamjet
         callback)
 
     gulp.task "test", ->
-      gulp.src("./dist/**/*_spec.js")
+      gulp.src(["./dist/**/*_spec.js", "!./dist/node_modules/**/*.js"])
         .pipe(jasmine({includeStackTrace: false}))
 
     gulp.task "auto-test", ->
